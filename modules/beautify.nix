@@ -269,37 +269,7 @@
   '';
   };
 
-  # ---- 12. SDDM 登录界面（sddm-sugar-candy 主题，复刻 hyprlock 磨砂质感）----
-  # 效果：模糊壁纸背景 + 居中时钟/日期 + 圆角输入框（与锁屏 hyprlock 风格统一）
-  # 主题需 pacman 安装 sddm-sugar-candy（见 setup/pacman-packages.txt）
-  xdg.dataFile."sddm/themes/sugar-candy/theme.conf.user".text = ''
-    [General]
-    Background="/home/ran/Pictures/Wallpapers/wallhaven-d88d53.png"
-    DimBackgroundImage="0.25"
-    ScaleImageCropped="true"
-    ScreenWidth="1920"
-    ScreenHeight="1080"
-
-    FullBlur="true"
-    PartialBlur="false"
-    BlurRadius="60"
-
-    HaveFormBackground="false"
-    FormPosition="center"
-    MainColor="#cdd6f4"
-    AccentColor="#cba6f7"
-    BackgroundColor="#11111b"
-    RoundCorners="12"
-    InterfaceShadowSize="5"
-    InterfaceShadowOpacity="0.5"
-    Font="JetBrains Maple Mono"
-
-    ForceLastUser="true"
-    ForcePasswordFocus="true"
-    ForceHideVirtualKeyboardButton="true"
-
-    HourFormat="HH:mm"
-    DateFormat="dddd, d MMMM"
-    HeaderText=""
-  '';
+  # ---- 12. 登录界面（DMS greeter，替代 sddm，风格与桌面壳统一）----
+  # 登录界面由 greetd + dms-greeter 提供，主题/壁纸/设置随 DMS 桌面壳同步
+  # （`dms greeter sync`，见 setup/restore.sh），无需 home-manager 单独配置。
 }

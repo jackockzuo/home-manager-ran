@@ -19,8 +19,7 @@ wireplumber
 pavucontrol
 gst-plugin-pipewire
 gst-plugins-good
-sddm
-sddm-kcm
+greetd
 xorg-server
 xorg-xinit
 xorg-xrandr
@@ -81,7 +80,7 @@ dms-shell
 quickshell
 waydroid-nvidia-bin
 swaync-git
-sddm-sugar-candy
+greetd-dms-greeter-bin
 kitty
 
 # ---- 商业/日常 GUI ----
@@ -138,7 +137,6 @@ ttf-wps-fonts
 
 # ---- 系统主题 ----
 catppuccin-mocha-grub-theme-git
-catppuccin-sddm-theme-macchiato
 catppuccin-gtk-theme-git
 catppuccin-qt5ct-git
 yaru-gtk-theme

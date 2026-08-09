@@ -10,6 +10,7 @@
   #   仅当目标不存在时从仓库拷贝（重装恢复场景）；
   #   运行中 DMS 自由写，home-manager 不覆盖。
   # - 日常改完 DMS 设置后，如需同步回仓库：手动 cp 更新 source/dms/
+  # - 登录界面（DMS greeter）主题由 `dms greeter sync` 从 ~/.config/DankMaterialShell 同步，无需单独配置
   # ============================================================
 
   # 静态主题目录（DMS 只读，可 symlink）

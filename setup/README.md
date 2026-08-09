@@ -39,10 +39,10 @@ curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/set
 ```
 
 自动完成（`setup/restore.sh`）：
-1. 启用基础服务（NetworkManager / bluetooth / pipewire / sddm）
+1. 启用基础服务（NetworkManager / bluetooth / pipewire）
 2. 安装 nix（官方安装器，含 flake）
 3. `home-manager switch` → **自动安装全部 nix 开发工具 + 生成全部个人配置**（niri/kitty/fcitx5/neovim/fastfetch/毛玻璃…）
-4. paru 批量安装 `pacman-packages.txt`（127 个：商业应用/驱动/输入法/字体/桌面壳）
+4. paru 批量安装 `pacman-packages.txt`（127 个：商业应用/驱动/输入法/字体/桌面壳），随后自动 `dms greeter install/sync` 配置 DMS greeter 登录界面
 5. 收尾检查
 
 脚本首次运行会自动 `git clone` 仓库到 `~/dotfiles`；之后想更新配置：`cd ~/dotfiles && git pull && home-manager switch --flake .#default`
@@ -50,7 +50,7 @@ curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/set
 ## 阶段 3：重启验证
 
 ```bash
-reboot   # 登录 sddm → niri
+reboot   # 登录 DMS greeter → niri
 ```
 
 - [ ] 终端 `Mod+T`（kitty）
@@ -68,7 +68,7 @@ cp -r ~/dms-backup/DankMaterialShell ~/.config/
 
 | 问题 | 解决 |
 |---|---|
-| niri 登录不了 | sddm 会话需指向 nix 的 niri-session：`/usr/share/wayland-sessions/niri.desktop` 的 Exec 改为 `~/.nix-profile/bin/niri-session` |
+| niri 登录不了 | DMS greeter 默认以 niri 作为会话（`/etc/greetd/config.toml` 的 command 带 `--command niri`）；配置被改后重跑 `dms greeter install` 修复 |
 | fcitx5 双份 | nix 装主程序，pacman 装 fcitx5-gtk/qt 模块（清单已含），勿删 |
 | kitty 打不开 | 必须用 pacman 版（nix 版 EGL 与 nvidia 不兼容），清单已含 |
 | 国内 GitHub 慢 | 手动 `git clone https://github.com/... ~/dotfiles` 用代理，再 `bash ~/dotfiles/setup/restore.sh` |

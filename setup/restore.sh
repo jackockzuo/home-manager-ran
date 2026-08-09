@@ -33,15 +33,7 @@ echo "==> [1/5] 启用基础系统服务"
 sudo systemctl enable --now NetworkManager 2>/dev/null || true
 sudo systemctl enable --now bluetooth 2>/dev/null || true
 sudo systemctl enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
-sudo systemctl enable --now sddm 2>/dev/null || true
 sudo systemctl enable --now fstrim.timer 2>/dev/null || true
-
-# SDDM 默认会话 → niri（登录后直接进 niri），主题 → sugar-candy（hyprlock 质感）
-sudo mkdir -p /etc/sddm.conf.d
-echo '[General]
-Session=niri' | sudo tee /etc/sddm.conf.d/10-niri.conf >/dev/null
-echo '[Theme]
-Current=sugar-candy' | sudo tee /etc/sddm.conf.d/99-theme.conf >/dev/null
 
 # ---------- 2/5 安装 nix ----------
 echo "==> [2/5] 安装 nix（含 flake 支持）"
@@ -67,6 +59,12 @@ mapfile -t PKGS < <(grep -vE '^\s*#|^\s*$' "$PKG_LIST")
 echo "    待安装 $((${#PKGS[@]})) 个包..."
 paru -S --needed --noconfirm "${PKGS[@]}"
 
+# DMS greeter 登录界面（替代 sddm，登录风格与 DMS 桌面壳统一）：
+# 1) dms greeter install 配置 greetd 使用 dms-greeter（自动禁用 sddm、启用 greetd）
+# 2) dms greeter sync 把当前 DMS 主题/壁纸/设置同步到登录界面
+dms greeter install -y 2>/dev/null || true
+dms greeter sync -y 2>/dev/null || true
+
 # ---------- 5/5 收尾 ----------
 echo "==> [5/5] 收尾"
 
@@ -84,7 +82,7 @@ fi
 echo ""
 echo "=================================================="
 echo " 恢复完成！请执行："
-echo "   1) 重启登录 sddm → niri"
+echo "   1) 重启登录 DMS greeter → niri"
 echo "   2) 若输入法异常: fcitx5-remote 检查"
 echo "   3) 可选: 恢复 DMS 用户配置 ~/.config/DankMaterialShell"
 echo "=================================================="
