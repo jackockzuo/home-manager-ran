@@ -43,6 +43,24 @@
       "schema_list":
         - schema: rime_ice
   '';
+  # 5b. 雾凇自定义（禁用 llm_translator：脚本缺失导致 rime 报错提示）
+  xdg.dataFile."fcitx5/rime/rime_ice.custom.yaml".text = ''
+    patch:
+
+      # 1. 扩充允许输入的字符集：允许在拼音中直接输入指定的标点符号，阻止其直接上屏
+      "speller/alphabet": "zyxwvutsrqponmlkjihgfedcba.,?'!:<>\\/"
+
+      # llm_translator（AI 翻译）已禁用：脚本缺失导致 rime 报错
+      # "engine/translators/@before 0": lua_translator@llm_translator
+      # "recognizer/patterns/llm_pinyin": "^[a-z][a-z.,?'!:<>/\\\\]*$"
+
+      # grammar 数据库缺失（wanxiang-lts-zh-hans.gram 不存在），禁用避免报错
+      # "grammar/language": wanxiang-lts-zh-hans
+  '';
+  # 5c. rime.lua（llm_translator 已禁用）
+  xdg.dataFile."fcitx5/rime/rime.lua".text = ''
+    -- llm_translator = require("llm_translator")  -- 已禁用（脚本缺失）
+  '';
 
   # 6. 默认输入法 Profile：开机默认加载美式键盘 + Rime 雾凇拼音
   xdg.configFile."fcitx5/profile".text = ''
