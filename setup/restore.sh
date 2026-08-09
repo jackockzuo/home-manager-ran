@@ -71,6 +71,22 @@ echo "==> [5/5] 收尾"
 # GRUB catppuccin 主题（主题包由上方 paru 安装，这里启用并重新生成）
 if [ -f "/boot/grub/themes/catppuccin-mocha-grub-theme/theme.txt" ]; then
     sudo sed -i 's|^#\?GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/catppuccin-mocha-grub-theme/theme.txt"|' /etc/default/grub
+
+    # 用登录/锁屏同款壁纸替换主题背景（与 niri/DMS 风格统一；壁纸缺失时保留自带背景）
+    WALLPAPER="$HOME/Pictures/Wallpapers/wallhaven-d88d53.png"
+    if [ -f "$WALLPAPER" ]; then
+        if command -v magick >/dev/null 2>&1; then
+            magick "$WALLPAPER" -resize 1920x1080^ -gravity center -extent 1920x1080 \
+                -background black -alpha remove -alpha off -fill black -colorize 12% -strip \
+                /tmp/grub-background.png
+            sudo cp /tmp/grub-background.png /boot/grub/themes/catppuccin-mocha-grub-theme/background.png
+            rm -f /tmp/grub-background.png
+        else
+            sudo cp "$WALLPAPER" /boot/grub/themes/catppuccin-mocha-grub-theme/background.png
+        fi
+        echo "    ✓ GRUB 背景已替换为壁纸（与 DMS 风格统一）"
+    fi
+
     sudo grub-mkconfig -o /boot/grub/grub.cfg
 fi
 
