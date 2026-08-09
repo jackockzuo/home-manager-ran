@@ -16,7 +16,7 @@ binds {
     // ==========================================
     // 🚀 启动常用程序
     // ==========================================
-    Mod+Space  hotkey-overlay-title="启动器：搜索并打开应用" { spawn "fuzzel"; }
+    Mod+P      hotkey-overlay-title="启动器：搜索并打开应用 (DMS Spotlight)" { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
     Mod+T      hotkey-overlay-title="打开终端 (Kitty)" { spawn "kitty"; }
     Mod+B      hotkey-overlay-title="打开默认浏览器" { spawn "xdg-open" "https://www.google.com"; }
     Mod+E      hotkey-overlay-title="打开文件管理器 (Nautilus)" { spawn "nautilus"; }

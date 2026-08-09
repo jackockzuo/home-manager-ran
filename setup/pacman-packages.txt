@@ -71,7 +71,6 @@ catppuccin-fcitx5-git
 
 # ---- 桌面环境（全局安装，nix 只管理配置）----
 niri
-fuzzel
 hyprlock
 # ---- 桌面辅助（全局安装）----
 awww
