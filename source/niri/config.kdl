@@ -178,8 +178,8 @@ spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
  spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
 // GNOME tracker修复
 spawn-sh-at-startup "systemctl --user set-environment XDG_SESSION_CLASS=user"
-// 通知程序（DMS 通知中心接管，mako 已移除）
-// spawn-at-startup "mako"
+// 通知程序（SwayNC 毛玻璃通知接管）
+spawn-at-startup "swaync"
 // 任务栏
 //spawn-at-startup "waybar"
 // 输入法

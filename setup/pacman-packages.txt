@@ -81,6 +81,7 @@ mpvpaper
 dms-shell
 quickshell
 waydroid-nvidia-bin
+swaync-git
 sddm-sugar-candy
 kitty
 
