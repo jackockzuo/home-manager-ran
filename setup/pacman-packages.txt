@@ -71,12 +71,10 @@ catppuccin-fcitx5-git
 
 # ---- 桌面环境（全局安装，nix 只管理配置）----
 niri
-waybar
 fuzzel
 hyprlock
 # ---- 桌面辅助（全局安装）----
 awww
-swaync
 hyprpolkitagent
 mpvpaper
 # ---- 桌面壳 + 终端 ----
@@ -158,4 +156,3 @@ os-prober
 efibootmgr
 reflector
 arch-install-scripts
-wlogout

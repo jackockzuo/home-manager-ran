@@ -20,10 +20,4 @@
     # 覆盖旧的独立 blur.kdl 真文件（现已并入 source/niri 由 home-manager 管理）
     force = true;
   };
-
-  # 3. 映射 waybar 整个目录
-  xdg.configFile."waybar" = {
-    source = ../source/waybar;
-    recursive = true;
-  };
 }

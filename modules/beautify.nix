@@ -22,23 +22,7 @@
     force = true; # 覆盖原作者旧配置
   };
 
-  # ---- 4. mako 通知 ----
-  # 效果：右上角、带图标、8s 超时、2px 边框、边距 10
-  services.mako = {
-    enable = true;
-    settings = {
-      border-size = 2;
-      icons = 1;
-      anchor = "top-right";
-      default-timeout = 8000;
-      margin = 10;
-      padding = 10;
-      font = "adwaita sans regular 11";
-      history = 1;
-      max-visible = 20;
-      max-history = 100;
-    };
-  };
+  # ---- 4. (已移除) mako 通知 —— DMS 通知中心接管（org.freedesktop.Notifications）----
 
   # ---- 5. satty 截图标注 ----
   # 效果：默认画笔、右键直接保存到剪贴板、缩放 1.1、Noto Sans + 中文回退字体
