@@ -135,5 +135,54 @@
     GLFW_IM_MODULE = "ibus";
     # 不依赖
     PASSWORD_STORE = "gnome-listsecret";
-  }
-  ;}
+  };
+  nix = {
+    # HM 生成 nix.conf 时必须指定 Nix 包（断言要求）
+    package = pkgs.nix;
+    settings = {
+      # 开启自动去重优化
+      auto-optimise-store = true;
+
+      # 现代 Nix 命令和 Flakes 支持
+      experimental-features = [ "nix-command" "flakes" ];
+
+      # 国内镜像源（由 ~/.config/nix/nix.conf 迁移而来，交由 HM 统一管理）
+      substituters = [
+        "https://mirror.sjtu.edu.cn/nix-channels/store"
+        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+        "https://mirrors.ustc.edu.cn/nix-channels/store"
+        "https://cache.nixos.org"
+      ];
+      trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+      connect-timeout = 10;
+    };
+  };
+
+  # 允许 HM 接管已存在的手写 ~/.config/nix/nix.conf（替换为生成文件）
+  xdg.configFile."nix/nix.conf".force = true;
+
+  # ===== Nix 自动垃圾回收（每周，保留 14 天回滚历史）=====
+  systemd.user.services."nix-gc" = {
+    Unit.Description = "Nix store garbage collection";
+    Service = {
+      Type = "oneshot";
+      ExecStart = [
+        # 清理 14 天前的 home-manager 旧代（HM 自己的 profile）
+        "${pkgs.nix}/bin/nix-env --delete-generations 14d --profile %h/.local/state/nix/profiles/home-manager"
+        # 清理 14 天前的 ~/.nix-profile 旧代（含 nix-env 残留的嵌套链接）
+        "${pkgs.nix}/bin/nix-env --delete-generations 14d --profile %h/.nix-profile"
+        # 回收 store 中不再被引用的路径
+        "${pkgs.nix}/bin/nix-store --gc"
+      ];
+    };
+  };
+
+  systemd.user.timers."nix-gc" = {
+    Unit.Description = "Weekly Nix store garbage collection";
+    Timer = {
+      OnCalendar = "weekly";
+      Persistent = true; # 错过执行时间则下次登录后补跑
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
+}
