@@ -68,9 +68,10 @@ binds {
     Mod+Ctrl+5 hotkey-overlay-title="移动窗口到工作区 5" { move-column-to-workspace 5; }
 
     // ==========================================
-    // 📸 截图功能 (鼠标框选)
+    // 📸 截图与剪贴板
     // ==========================================
     Mod+Shift+S hotkey-overlay-title="屏幕截图：按下后用鼠标拖拽框选" { spawn "niri" "msg" "action" "screenshot"; }
+    Mod+Shift+V hotkey-overlay-title="剪贴板历史 (DMS Clipboard)" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
 
     // ==========================================
     // 🔊 声音与亮度 (键盘自带的多媒体键)

@@ -12,6 +12,7 @@ include "output.kdl"
 include "layout.kdl"
 // 毛玻璃效果（所有窗口背景模糊），详见 blur.kdl
 include "blur.kdl"
+include "animations.kdl"
 // 截图保存位置
 screenshot-path "~/Pictures/Screenshots/Niri-screenshots/%Y-%m-%d %H-%M-%S.png"
 

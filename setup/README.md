@@ -88,3 +88,20 @@ cp ~/.config/DankMaterialShell/settings.json ~/.config/home-manager/source/dms/
 cp ~/.config/DankMaterialShell/monitors.json ~/.config/home-manager/source/dms/
 cd ~/.config/home-manager && git add -A && git commit -m "sync dms config" && git push
 ```
+
+## 日常更新流程
+
+```bash
+bash ~/dotfiles/setup/update.sh
+# 或手动：
+nix flake update --flake ~/dotfiles
+home-manager switch --flake ~/dotfiles#default
+sudo pacman -Syu
+```
+
+DMS 配置同步（改过 DMS 设置后）：
+```bash
+cp ~/.config/DankMaterialShell/settings.json ~/dotfiles/source/dms/
+cp ~/.config/DankMaterialShell/monitors.json ~/dotfiles/source/dms/
+cd ~/dotfiles && git add -A && git commit -m "sync dms" && git push
+```
