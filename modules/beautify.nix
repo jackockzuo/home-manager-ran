@@ -251,7 +251,16 @@
     org.freedesktop.impl.portal.Screenshot=gnome
   '';
 
-  # ---- 10. QQ 原生 Wayland ----
+  # ---- 10. Chrome 渲染后端（修复 nvidia+wayland 滚动闪烁）----
+  # 效果：Chrome 用 Vulkan 渲染后端，避免 GPU 合成帧损坏导致的整屏闪烁
+  xdg.configFile."google-chrome-flags.conf" = {
+    force = true;
+    text = ''
+    --use-angle=vulkan
+  '';
+  };
+
+  # ---- 11. QQ 原生 Wayland ----
   # 效果：QQ 以原生 Wayland 模式运行（替代 XWayland 转译）
   xdg.configFile."qq-flags.conf" = {
     force = true; # 覆盖原作者旧配置
@@ -260,7 +269,7 @@
   '';
   };
 
-  # ---- 11. SDDM 登录界面（sddm-sugar-candy 主题，复刻 hyprlock 磨砂质感）----
+  # ---- 12. SDDM 登录界面（sddm-sugar-candy 主题，复刻 hyprlock 磨砂质感）----
   # 效果：模糊壁纸背景 + 居中时钟/日期 + 圆角输入框（与锁屏 hyprlock 风格统一）
   # 主题需 pacman 安装 sddm-sugar-candy（见 setup/pacman-packages.txt）
   xdg.dataFile."sddm/themes/sugar-candy/theme.conf.user".text = ''
