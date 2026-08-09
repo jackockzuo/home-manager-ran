@@ -1,5 +1,5 @@
 {
-  description = "Ran's own Niri user Configuration";
+  description = "Home Manager configuration of ran";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -14,10 +14,14 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
     in {
-      # 这里的 "default" 是你的配置名称
+      # 名字对应你命令中的 .#default
       homeConfigurations."default" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home.nix ];
+
+        # 注意：modules 是列表 [ ]，结尾用 ]; 闭合
+        modules = [
+          ./home.nix
+        ];
       };
     };
 }

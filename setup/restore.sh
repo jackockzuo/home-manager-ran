@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# ============================================================
+# 一键恢复脚本 —— archinstall 装好基础系统后运行
+# 用法（一条命令，自动下载仓库）:
+#   curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/setup/restore.sh | bash
+# 或（已 clone 仓库）:
+#   bash ~/dotfiles/setup/restore.sh
+#
+# 功能：基础服务 → nix → home-manager（开发工具链+个人配置）
+#       → pacman/AUR 应用（商业/系统/输入法/字体）
+# ============================================================
+set -euo pipefail
+
+REPO_URL="https://github.com/jackockzuo/home-manager-ran.git"
+
+if [ -d "$(dirname "${BASH_SOURCE[0]:-}")/../.git" ] 2>/dev/null; then
+    REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+else
+    REPO_DIR="$HOME/dotfiles"
+    if [ ! -d "$REPO_DIR/.git" ]; then
+        command -v git >/dev/null 2>&1 || sudo pacman -S --noconfirm --needed git
+        git clone --depth 1 "$REPO_URL" "$REPO_DIR"
+    fi
+fi
+PKG_LIST="$REPO_DIR/setup/pacman-packages.txt"
+
+echo "=================================================="
+echo " 开始恢复（仓库: $REPO_DIR）"
+echo "=================================================="
+
+# ---------- 1/5 基础服务 ----------
+echo "==> [1/5] 启用基础系统服务"
+sudo systemctl enable --now NetworkManager 2>/dev/null || true
+sudo systemctl enable --now bluetooth 2>/dev/null || true
+sudo systemctl enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
+sudo systemctl enable --now sddm 2>/dev/null || true
+sudo systemctl enable --now fstrim.timer 2>/dev/null || true
+
+# SDDM 默认会话 → niri（登录后直接进 niri），主题 → sugar-candy（hyprlock 质感）
+sudo mkdir -p /etc/sddm.conf.d
+echo '[General]
+Session=niri' | sudo tee /etc/sddm.conf.d/10-niri.conf >/dev/null
+echo '[Theme]
+Current=sugar-candy' | sudo tee /etc/sddm.conf.d/99-theme.conf >/dev/null
+
+# ---------- 2/5 安装 nix ----------
+echo "==> [2/5] 安装 nix（含 flake 支持）"
+if ! command -v nix >/dev/null 2>&1; then
+    curl -L https://nixos.org/nix/install | sh
+    set +u; . "$HOME/.nix-profile/etc/profile.d/nix.sh"; set -u
+fi
+nix --version
+
+# ---------- 3/5 恢复 home-manager（nix 管开发工具链 + 个人配置）----------
+echo "==> [3/5] 恢复 home-manager（nix 自动安装所有个人工具与配置）"
+# 安装 home-manager 命令（若已有则跳过）
+nix profile install github:nix-community/home-manager 2>/dev/null || true
+# 执行切换：自动安装 fastfetch/fzf/neovim/niri 等全部 nix 包 + 生成全部配置文件
+home-manager switch --flake "$REPO_DIR#default"
+
+# ---------- 4/5 安装 pacman/AUR 应用 ----------
+echo "==> [4/5] 安装 pacman/AUR 应用（paru 统一处理官方仓库 + AUR）"
+# archlinuxcn 仓库（若已配置则启用；未配置时 paru 走官方仓库 + AUR）
+sudo pacman -S --needed --noconfirm paru 2>/dev/null || true
+# 安装清单（忽略注释行和空行）
+mapfile -t PKGS < <(grep -vE '^\s*#|^\s*$' "$PKG_LIST")
+echo "    待安装 $((${#PKGS[@]})) 个包..."
+paru -S --needed --noconfirm "${PKGS[@]}"
+
+# ---------- 5/5 收尾 ----------
+echo "==> [5/5] 收尾"
+
+# GRUB catppuccin 主题（主题包由上方 paru 安装，这里启用并重新生成）
+if [ -f "/boot/grub/themes/catppuccin-mocha-grub-theme/theme.txt" ]; then
+    sudo sed -i 's|^#\?GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/catppuccin-mocha-grub-theme/theme.txt"|' /etc/default/grub
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+fi
+
+# 若 nvidia 驱动已装，提示确认
+if command -v nvidia-smi >/dev/null 2>&1; then
+    echo "    ✓ NVIDIA 驱动已就绪: $(nvidia-smi -L 2>/dev/null | head -1)"
+fi
+
+echo ""
+echo "=================================================="
+echo " 恢复完成！请执行："
+echo "   1) 重启登录 sddm → niri"
+echo "   2) 若输入法异常: fcitx5-remote 检查"
+echo "   3) 可选: 恢复 DMS 用户配置 ~/.config/DankMaterialShell"
+echo "=================================================="

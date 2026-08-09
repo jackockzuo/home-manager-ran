@@ -1,0 +1,82 @@
+// 左手键盘 + 右手鼠标 + 动态中文说明书 (binds.kdl)
+binds {
+
+    // ==========================================
+    // 📖 快捷键说明书 (按 Super + F1 唤出)
+    // ==========================================
+    Mod+F1 { show-hotkey-overlay; }
+
+    // ==========================================
+    // 🔌 电源与系统菜单 (左手键盘，右手鼠标点击)
+    // ==========================================
+    Mod+X      hotkey-overlay-title="电源菜单 (关机/重启/锁屏/注销)" { spawn "wlogout"; }
+    Mod+Escape hotkey-overlay-title="电源菜单 (关机/重启/锁屏/注销)" { spawn "wlogout"; }
+
+    // ==========================================
+    // 🚀 启动常用程序
+    // ==========================================
+    Mod+Space  hotkey-overlay-title="启动器：搜索并打开应用" { spawn "fuzzel"; }
+    Mod+T      hotkey-overlay-title="打开终端 (Kitty)" { spawn "kitty"; }
+    Mod+B      hotkey-overlay-title="打开浏览器 (Chrome)" { spawn "chrome"; }
+    Mod+E      hotkey-overlay-title="打开文件管理器 (Nautilus)" { spawn "nautilus"; }
+
+    // ==========================================
+    // 🎮 游戏化窗口焦点切换 (WASD)
+    // ==========================================
+    Mod+W      hotkey-overlay-title="聚焦：上方的窗口" { focus-window-up; }
+    Mod+A      hotkey-overlay-title="聚焦：左侧的窗口" { focus-column-left; }
+    Mod+S      hotkey-overlay-title="聚焦：下方的窗口" { focus-window-down; }
+    Mod+D      hotkey-overlay-title="聚焦：右侧的窗口" { focus-column-right; }
+
+    // ==========================================
+    // 📦 移动窗口位置 (Ctrl + WASD)
+    // ==========================================
+    Mod+Ctrl+W hotkey-overlay-title="移动窗口：向上" { move-window-up; }
+    Mod+Ctrl+A hotkey-overlay-title="移动窗口：向左" { move-column-left; }
+    Mod+Ctrl+S hotkey-overlay-title="移动窗口：向下" { move-window-down; }
+    Mod+Ctrl+D hotkey-overlay-title="移动窗口：向右" { move-column-right; }
+
+    // ==========================================
+    // 📐 窗口状态与尺寸控制
+    // ==========================================
+    Mod+Q      hotkey-overlay-title="关闭当前选中的窗口" { close-window; }
+    Mod+F      hotkey-overlay-title="最大化当前窗口 (填充空白)" { maximize-column; }
+    Mod+Alt+F  { fullscreen-window; } // 隐藏不显示在说明书里
+    Mod+V      hotkey-overlay-title="切换窗口模式 (浮动/平铺)" { toggle-window-floating; }
+    Mod+R      hotkey-overlay-title="调整窗口宽度 (按预设循环切换)" { switch-preset-column-width; }
+
+    // ==========================================
+    // 🖱️ 鼠标滚轮切换工作区 (桌面)
+    // ==========================================
+    // 按住 Super + 滚轮上下滚动，即可丝滑切桌面
+    Mod+WheelScrollDown cooldown-ms=150 hotkey-overlay-title="切换工作区：按住 Super 键滚动鼠标轮" { focus-workspace-down; }
+    Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+
+    // 备用：单手数字键 1-5 切换工作区
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+
+    // 移动窗口到工作区 1-5
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+
+    // ==========================================
+    // 📸 截图功能 (鼠标框选)
+    // ==========================================
+    Mod+Shift+S hotkey-overlay-title="屏幕截图：按下后用鼠标拖拽框选" { spawn "niri" "msg" "action" "screenshot"; }
+
+    // ==========================================
+    // 🔊 声音与亮度 (键盘自带的多媒体键)
+    // ==========================================
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "+5%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
+}

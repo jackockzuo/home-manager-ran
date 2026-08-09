@@ -5,6 +5,9 @@
   home.username = "ran";
   home.homeDirectory = "/home/ran/";
 
+  # 允许 unfree 包（unrar 等迁移工具需要）
+  nixpkgs.config.allowUnfree = true;
+
   home.stateVersion = "24.05";
   programs.home-manager.enable = true;
   programs.git = {
@@ -23,22 +26,19 @@
   imports = [
     ./modules/kitty.nix
     ./modules/shell.nix
-    ./modules/desktop.nix
-    ./modules/fuzzel.nix
+    ./modules/niri.nix
     ./modules/fcitx5.nix
     ./modules/neovim.nix
+    ./modules/beautify.nix
+    ./modules/dms.nix
   ];
 
   # 声明全局安装的工具软件
   home.packages = with pkgs; [
-    # Wayland 工具
-    awww
-    swaynotificationcenter
+    # Wayland 截图/剪贴板工具（桌面组件已移 pacman：niri/waybar/fuzzel/hyprlock/awww/swaync/hyprpolkitagent/mpvpaper）
     grim
     slurp
     wl-clipboard
-    hyprpolkitagent
-
     # 常用 CLI 增强工具
     fastfetch
     btop
@@ -51,6 +51,38 @@
     udiskie    # U盘自动挂载
     duf     # 磁盘空间直观柱状图
     dust    # 文件夹空间占用树状图
+
+    # ===== 从 pacman 迁移的个人小工具（2026-08）=====
+    # 终端增强
+    fzf
+    zoxide
+    jq
+    tree
+    moreutils
+    # 终端美化
+    timg
+    ueberzugpp
+    cava
+    matugen
+    # Wayland/X11 辅助
+    wf-recorder
+    xclip
+    xdotool
+    ydotool
+    # 下载/转换
+    yt-dlp
+    pandoc
+    p7zip
+    unrar
+    imagemagick
+    # 文档/代码
+    typst
+    tinymist
+    tree-sitter
+    # 杂项
+    topgrade
+    mcat
+    dgop
   ];
   programs.direnv = {
       enable = true;
