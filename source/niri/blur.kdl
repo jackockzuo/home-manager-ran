@@ -7,8 +7,8 @@
 
 // 顶层的blur配置，细节调整blur的效果
 blur {
-    passes 3
-    offset 3
+    passes 4
+    offset 4
     noise 0.02
     saturation 1.5
 }
