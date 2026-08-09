@@ -90,6 +90,9 @@ if [ -f "/boot/grub/themes/catppuccin-mocha-grub-theme/theme.txt" ]; then
     sudo grub-mkconfig -o /boot/grub/grub.cfg
 fi
 
+# 关闭 pam_faillock 密码失败锁定（防 greeter/polkit 弹窗误触发锁死账户）
+printf 'deny = 999999\n' | sudo tee /etc/security/faillock.conf >/dev/null
+
 # 若 nvidia 驱动已装，提示确认
 if command -v nvidia-smi >/dev/null 2>&1; then
     echo "    ✓ NVIDIA 驱动已就绪: $(nvidia-smi -L 2>/dev/null | head -1)"
