@@ -1,4 +1,5 @@
 // 左手键盘 + 右手鼠标 + 动态中文说明书 (binds.kdl)
+// 所有绑定均带 hotkey-overlay-title，按 Mod+F1 可查看全部
 binds {
 
     // ==========================================
@@ -7,17 +8,17 @@ binds {
     Mod+F1 { show-hotkey-overlay; }
 
     // ==========================================
-    // 🔌 电源与系统菜单 (左手键盘，右手鼠标点击)
+    // 🔌 电源菜单 (DMS 原生电源菜单)
     // ==========================================
-    Mod+X      hotkey-overlay-title="电源菜单 (关机/重启/锁屏/注销)" { spawn "wlogout"; }
-    Mod+Escape hotkey-overlay-title="电源菜单 (关机/重启/锁屏/注销)" { spawn "wlogout"; }
+    Mod+X      hotkey-overlay-title="电源菜单 (关机/重启/锁屏/注销)" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+    Mod+Escape hotkey-overlay-title="电源菜单 (关机/重启/锁屏/注销)" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
 
     // ==========================================
     // 🚀 启动常用程序
     // ==========================================
     Mod+Space  hotkey-overlay-title="启动器：搜索并打开应用" { spawn "fuzzel"; }
     Mod+T      hotkey-overlay-title="打开终端 (Kitty)" { spawn "kitty"; }
-    Mod+B      hotkey-overlay-title="打开浏览器 (Chrome)" { spawn "chrome"; }
+    Mod+B      hotkey-overlay-title="打开默认浏览器" { spawn "xdg-open" "https://www.google.com"; }
     Mod+E      hotkey-overlay-title="打开文件管理器 (Nautilus)" { spawn "nautilus"; }
 
     // ==========================================
@@ -41,7 +42,7 @@ binds {
     // ==========================================
     Mod+Q      hotkey-overlay-title="关闭当前选中的窗口" { close-window; }
     Mod+F      hotkey-overlay-title="最大化当前窗口 (填充空白)" { maximize-column; }
-    Mod+Alt+F  { fullscreen-window; } // 隐藏不显示在说明书里
+    Mod+Alt+F  hotkey-overlay-title="切换全屏窗口" { fullscreen-window; }
     Mod+V      hotkey-overlay-title="切换窗口模式 (浮动/平铺)" { toggle-window-floating; }
     Mod+R      hotkey-overlay-title="调整窗口宽度 (按预设循环切换)" { switch-preset-column-width; }
 
@@ -49,22 +50,22 @@ binds {
     // 🖱️ 鼠标滚轮切换工作区 (桌面)
     // ==========================================
     // 按住 Super + 滚轮上下滚动，即可丝滑切桌面
-    Mod+WheelScrollDown cooldown-ms=150 hotkey-overlay-title="切换工作区：按住 Super 键滚动鼠标轮" { focus-workspace-down; }
-    Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollDown cooldown-ms=150 hotkey-overlay-title="切换工作区：向下滚动" { focus-workspace-down; }
+    Mod+WheelScrollUp   cooldown-ms=150 hotkey-overlay-title="切换工作区：向上滚动" { focus-workspace-up; }
 
     // 备用：单手数字键 1-5 切换工作区
-    Mod+1 { focus-workspace 1; }
-    Mod+2 { focus-workspace 2; }
-    Mod+3 { focus-workspace 3; }
-    Mod+4 { focus-workspace 4; }
-    Mod+5 { focus-workspace 5; }
+    Mod+1 hotkey-overlay-title="切换到工作区 1" { focus-workspace 1; }
+    Mod+2 hotkey-overlay-title="切换到工作区 2" { focus-workspace 2; }
+    Mod+3 hotkey-overlay-title="切换到工作区 3" { focus-workspace 3; }
+    Mod+4 hotkey-overlay-title="切换到工作区 4" { focus-workspace 4; }
+    Mod+5 hotkey-overlay-title="切换到工作区 5" { focus-workspace 5; }
 
     // 移动窗口到工作区 1-5
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
-    Mod+Ctrl+4 { move-column-to-workspace 4; }
-    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+1 hotkey-overlay-title="移动窗口到工作区 1" { move-column-to-workspace 1; }
+    Mod+Ctrl+2 hotkey-overlay-title="移动窗口到工作区 2" { move-column-to-workspace 2; }
+    Mod+Ctrl+3 hotkey-overlay-title="移动窗口到工作区 3" { move-column-to-workspace 3; }
+    Mod+Ctrl+4 hotkey-overlay-title="移动窗口到工作区 4" { move-column-to-workspace 4; }
+    Mod+Ctrl+5 hotkey-overlay-title="移动窗口到工作区 5" { move-column-to-workspace 5; }
 
     // ==========================================
     // 📸 截图功能 (鼠标框选)
@@ -74,9 +75,9 @@ binds {
     // ==========================================
     // 🔊 声音与亮度 (键盘自带的多媒体键)
     // ==========================================
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "+5%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
+    XF86AudioRaiseVolume allow-when-locked=true hotkey-overlay-title="音量增大" { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume allow-when-locked=true hotkey-overlay-title="音量减小" { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute        allow-when-locked=true hotkey-overlay-title="静音切换" { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86MonBrightnessUp   allow-when-locked=true hotkey-overlay-title="亮度增加" { spawn "brightnessctl" "set" "+5%"; }
+    XF86MonBrightnessDown allow-when-locked=true hotkey-overlay-title="亮度降低" { spawn "brightnessctl" "set" "5%-"; }
 }

@@ -166,6 +166,7 @@ overview {
 	//缩放
 	zoom 0.5
 }
+
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,
 // which may be more convenient to use.
@@ -197,10 +198,12 @@ spawn-at-startup "~/.config/niri/scripts/screenshot-sound.sh"
 // 允许root通过用户的xwayland打开窗口
 spawn-at-startup "xhost" "+si:localuser:root"
 
-// 取消启动niri时自动开启快捷键教程
+// 取消启动niri时自动开启快捷键教程；隐藏未绑定的 action（避免显示 "not bound"）
 hotkey-overlay {
     // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
      skip-at-startup
+    // 隐藏未绑定快捷键的 action 提示
+    hide-not-bound
 }
 
 // 隐藏窗口标题栏
