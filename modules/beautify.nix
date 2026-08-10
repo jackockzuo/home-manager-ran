@@ -9,7 +9,7 @@
   # ---- 1. fastfetch 定制系统信息面板 ----
   # 效果：终端启动时显示彩色键名的树状信息面板（OS/KER/PAK/AGE/USR/WM/DES/SHE/TER/PC/CPU/MEM/SWP/GPU/MON/DIS）
   xdg.configFile."fastfetch/config.jsonc" = {
-    source = ../minimal-niri-dotfiles/.config/fastfetch/config.jsonc;
+    source = ../source/beautify/fastfetch/config.jsonc;
     force = true; # 覆盖原作者旧配置
   };
 
@@ -18,7 +18,7 @@
   # ---- 3. fontconfig 字体渲染 ----
   # 效果：全局抗锯齿 + hintslight 微调 + 中文回退（Noto Sans CJK SC）+ monospace 优先 JetBrains Mono
   xdg.configFile."fontconfig/fonts.conf" = {
-    source = ../minimal-niri-dotfiles/.config/fontconfig/fonts.conf;
+    source = ../source/beautify/fontconfig/fonts.conf;
     force = true; # 覆盖原作者旧配置
   };
 
@@ -97,7 +97,7 @@
   # ---- 5. satty 截图标注 ----
   # 效果：默认画笔、右键直接保存到剪贴板、缩放 1.1、Noto Sans + 中文回退字体
   xdg.configFile."satty/config.toml" = {
-    source = ../minimal-niri-dotfiles/.config/satty/config.toml;
+    source = ../source/beautify/satty/config.toml;
     force = true; # 覆盖原作者旧配置
   };
 
