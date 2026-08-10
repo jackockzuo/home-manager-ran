@@ -18,6 +18,22 @@
     };
   };
 
+  # 2. 🔴 屏蔽 Arch 包自带的 XDG autostart（/etc/xdg/autostart/org.fcitx.Fcitx5.desktop）
+  # systemd-xdg-autostart-generator 会从它生成 app-org.fcitx.Fcitx5@autostart.service，
+  # 与 niri 的 spawn-at-startup "fcitx5" 同时拉起 → 抢 DBus 名 → 后启动实例失败退出
+  # （journal 报 "another fcitx already running"，输入法反复失效的根因）
+  # systemd.enable = false 只管 HM 自己生成的单元，管不住 Arch 包这条路径。
+  # XDG 规则：用户目录 ~/.config/autostart 同名文件优先于 /etc/xdg/autostart；
+  # Hidden=true 让 generator 跳过，从源头消灭重复启动。
+  xdg.configFile."autostart/org.fcitx.Fcitx5.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Fcitx 5
+    Comment=Start Input Method
+    Exec=/usr/bin/fcitx5
+    Hidden=true
+  '';
+
 
 
   # 3. 彻底禁用云拼音 (有了雾凇词库，完全不需要云拼音，零延迟)
@@ -64,6 +80,33 @@
     -- llm_translator = require("llm_translator")  -- 已禁用（脚本缺失）
   '';
 
+  # 5d. 🔴 声明式链接 rime-ice 词库组件（替代 8月9日 的手动 ln -s 与旧拷贝，重装系统自动恢复）
+  # 之前 cn_dicts/en_dicts/opencc 是手动 symlink（非声明式）；lua 目录是旧拷贝，
+  # 缺 uuid.lua/lunar.db/convert_ar_num_to_zh.lua → rime_ice.schema.yaml 引用
+  # lua_translator@*uuid 部署失败 → 输入法失效 + journal 疯狂刷屏（lua_gears.cc）。
+  xdg.dataFile."fcitx5/rime/lua" = {
+    source = "${pkgs.rime-ice}/share/rime-data/lua";
+    force = true; # 覆盖旧的真实拷贝目录
+  };
+  xdg.dataFile."fcitx5/rime/cn_dicts" = {
+    source = "${pkgs.rime-ice}/share/rime-data/cn_dicts";
+  };
+  xdg.dataFile."fcitx5/rime/en_dicts" = {
+    source = "${pkgs.rime-ice}/share/rime-data/en_dicts";
+  };
+  xdg.dataFile."fcitx5/rime/opencc" = {
+    source = "${pkgs.rime-ice}/share/rime-data/opencc";
+  };
+  xdg.dataFile."fcitx5/rime/rime_ice.dict.yaml" = {
+    source = "${pkgs.rime-ice}/share/rime-data/rime_ice.dict.yaml";
+  };
+  xdg.dataFile."fcitx5/rime/rime_ice.schema.yaml" = {
+    source = "${pkgs.rime-ice}/share/rime-data/rime_ice.schema.yaml";
+  };
+  xdg.dataFile."fcitx5/rime/rime_ice_suggestion.yaml" = {
+    source = "${pkgs.rime-ice}/share/rime-data/rime_ice_suggestion.yaml";
+  };
+
   # 6. 默认输入法 Profile：开机默认加载美式键盘 + Rime 雾凇拼音
   xdg.configFile."fcitx5/profile".text = ''
     [Groups/0]
@@ -101,8 +144,9 @@ ModifierOnlyKeyTimeout=250
 
 [Hotkey/TriggerKeys]
 0=Ctrl+space
-1=Zenkaku_Hankaku
-2=Hangul
+1=Shift+space
+2=Zenkaku_Hankaku
+3=Hangul
 
 [Hotkey/ActivateKeys]
 0=Hangul_Hanja
@@ -115,6 +159,7 @@ ModifierOnlyKeyTimeout=250
 
 [Hotkey/EnumerateGroupForwardKeys]
 0=Ctrl+space
+1=Shift+space
 
 [Hotkey/EnumerateGroupBackwardKeys]
 0=Shift+Ctrl+space
