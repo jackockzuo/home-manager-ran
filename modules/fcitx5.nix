@@ -6,6 +6,8 @@
     enable = true;
     type = "fcitx5";
     fcitx5 = {
+      # niri 的 spawn-at-startup 已负责启动 fcitx5；禁用 HM 生成的 systemd 单元，避免 DBus 名冲突
+      systemd.enable = false;
       addons = with pkgs; [
         qt6Packages.fcitx5-chinese-addons
         fcitx5-gtk
@@ -133,8 +135,8 @@ ModifierOnlyKeyTimeout=250
 0=Control+Alt+P
 
 [Behavior]
-# 默认状态为激活
-ActiveByDefault=False
+# 默认激活：打开即中文；需要输命令时按 Ctrl+Space 切回英文
+ActiveByDefault=True
 # 重新聚焦时重置状态
 resetStateWhenFocusIn=No
 # 共享输入状态
