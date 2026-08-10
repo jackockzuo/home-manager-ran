@@ -251,16 +251,22 @@
     org.freedesktop.impl.portal.Screenshot=gnome
   '';
 
-  # ---- 10. Chrome 渲染后端（修复 nvidia+wayland 滚动闪烁）----
-  # 效果：Wayland 下用 EGL 渲染后端（--use-angle=vulkan 在 Nvidia 驱动上不稳定，
-  #       易崩溃/白屏/更严重闪烁）；自动检测 Wayland 协议；禁用视频硬件解码
-  #       （正确参数是 --disable-accelerated-video-decode，而非无效的 HardwareMediaDecoding）
-  xdg.configFile."google-chrome-flags.conf" = {
+  # ---- 10. Chrome 渲染后端（修复 nvidia+wayland 闪烁/视频绿屏）----
+  # 🔴 注意：Arch 版 google-chrome-stable 启动脚本读取的是 chrome-flags.conf
+  # （见 /usr/bin/google-chrome-stable: grep -v '^#' ~/.config/chrome-flags.conf），
+  # 不是 google-chrome-flags.conf！之前配置在错误文件上从未生效。
+  # 🔴 注意2：--use-gl=egl 不是合法值（报错 "Requested GL implementation (gl=egl-gles2)
+  # not found"），Chrome 151 只接受 --use-gl=egl-angle + --use-angle=...。
+  # NVIDIA Wayland 视频绿屏根因是 VA-API 硬解 + GPU 进程崩溃：
+  # - 禁用 VaapiVideoDecoder（正确关闭视频硬解的 feature 名）
+  # - 用 egl-angle + gl（最稳的 ANGLE 后端组合）
+  xdg.configFile."chrome-flags.conf" = {
     force = true;
     text = ''
-    --use-gl=egl
+    --use-gl=egl-angle
+    --use-angle=gl
     --ozone-platform-hint=auto
-    --disable-accelerated-video-decode
+    --disable-features=VaapiVideoDecoder
   '';
   };
 
