@@ -252,11 +252,15 @@
   '';
 
   # ---- 10. Chrome 渲染后端（修复 nvidia+wayland 滚动闪烁）----
-  # 效果：Chrome 用 Vulkan 渲染后端，避免 GPU 合成帧损坏导致的整屏闪烁
+  # 效果：Wayland 下用 EGL 渲染后端（--use-angle=vulkan 在 Nvidia 驱动上不稳定，
+  #       易崩溃/白屏/更严重闪烁）；自动检测 Wayland 协议；禁用视频硬件解码
+  #       （正确参数是 --disable-accelerated-video-decode，而非无效的 HardwareMediaDecoding）
   xdg.configFile."google-chrome-flags.conf" = {
     force = true;
     text = ''
-    --use-angle=vulkan
+    --use-gl=egl
+    --ozone-platform-hint=auto
+    --disable-accelerated-video-decode
   '';
   };
 
