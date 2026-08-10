@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   # ⚠️ 替换为你的实际用户名（可以在终端输入 whoami 查看）
   home.username = "ran";
-  home.homeDirectory = "/home/ran/";
+  home.homeDirectory = "/home/ran";
 
   # 允许 unfree 包（unrar 等迁移工具需要）
   nixpkgs.config.allowUnfree = true;
@@ -132,17 +132,14 @@
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
     SDL_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "ibus";
+    GLFW_IM_MODULE = "ibus"; # fcitx5 提供 ibus 兼容，GLFW 应用走 ibus 通道
     # 不依赖
     PASSWORD_STORE = "gnome-listsecret";
   };
   nix = {
-    # HM 生成 nix.conf 时必须指定 Nix 包（断言要求）
-    package = pkgs.nix;
+    # mkDefault：Arch 单机版满足断言；NixOS 上由 HM 的 NixOS 模块提供
+    package = lib.mkDefault pkgs.nix;
     settings = {
-      # 开启自动去重优化
-      auto-optimise-store = true;
-
       # 现代 Nix 命令和 Flakes 支持
       experimental-features = [ "nix-command" "flakes" ];
 
@@ -153,7 +150,7 @@
         "https://mirrors.ustc.edu.cn/nix-channels/store"
         "https://cache.nixos.org"
       ];
-      trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+      # trusted-public-keys 已由 /etc/nix/nix.conf（daemon 侧）管理，客户端不设避免 restricted 警告
       connect-timeout = 10;
     };
   };
