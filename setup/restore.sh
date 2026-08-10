@@ -45,10 +45,9 @@ nix --version
 
 # ---------- 3/5 恢复 home-manager（nix 管开发工具链 + 个人配置）----------
 echo "==> [3/5] 恢复 home-manager（nix 自动安装所有个人工具与配置）"
-# 安装 home-manager 命令（若已有则跳过）
-nix profile install github:nix-community/home-manager 2>/dev/null || true
-# 执行切换：自动安装 fastfetch/fzf/neovim/niri 等全部 nix 包 + 生成全部配置文件
-home-manager switch --flake "$REPO_DIR#default"
+# 用 nix run 临时执行（避免把 home-manager 装进 profile 与 home-manager-path 文件冲突）
+# switch 后 home-manager-path 会进 ~/.nix-profile，之后 home-manager 命令可直接用
+nix run github:nix-community/home-manager -- switch --flake "$REPO_DIR#ran"
 
 # ---------- 4/5 安装 pacman/AUR 应用 ----------
 echo "==> [4/5] 安装 pacman/AUR 应用（paru 统一处理官方仓库 + AUR）"

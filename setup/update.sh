@@ -8,7 +8,7 @@ echo "==> [1/3] 更新 nix flake 锁定版本"
 nix flake update --flake "$REPO_DIR"
 
 echo "==> [2/3] home-manager switch（应用新配置）"
-home-manager switch --flake "$REPO_DIR#default"
+home-manager switch --flake "$REPO_DIR#ran"
 
 echo "==> [3/3] pacman 系统更新（手动确认）"
 echo "    运行: sudo pacman -Syu"

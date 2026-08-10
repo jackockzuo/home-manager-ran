@@ -42,10 +42,10 @@ curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/set
 1. 启用基础服务（NetworkManager / bluetooth / pipewire）
 2. 安装 nix（官方安装器，含 flake）
 3. `home-manager switch` → **自动安装全部 nix 开发工具 + 生成全部个人配置**（niri/kitty/fcitx5/neovim/fastfetch/毛玻璃…）
-4. paru 批量安装 `pacman-packages.txt`（127 个：商业应用/驱动/输入法/字体/桌面壳），随后自动 `dms greeter install/sync` 配置 DMS greeter 登录界面
+4. paru 批量安装 `pacman-packages.txt`（1295 个：全部显式安装包），随后自动 `dms greeter install/sync` 配置 DMS greeter 登录界面
 5. 收尾检查
 
-脚本首次运行会自动 `git clone` 仓库到 `~/dotfiles`；之后想更新配置：`cd ~/dotfiles && git pull && home-manager switch --flake .#default`
+脚本首次运行会自动 `git clone` 仓库到 `~/dotfiles`；之后想更新配置：`cd ~/dotfiles && git pull && home-manager switch --flake .#ran`
 
 ## 阶段 3：重启验证
 
@@ -95,7 +95,7 @@ cd ~/.config/home-manager && git add -A && git commit -m "sync dms config" && gi
 bash ~/dotfiles/setup/update.sh
 # 或手动：
 nix flake update --flake ~/dotfiles
-home-manager switch --flake ~/dotfiles#default
+home-manager switch --flake ~/dotfiles#ran
 sudo pacman -Syu
 ```
 
