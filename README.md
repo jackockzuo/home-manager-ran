@@ -251,3 +251,29 @@ home-manager switch --flake .#ran   # 应用
 
 - **生成可复用镜像**：install.sh 装好的系统可清理后打包成自定义 ISO（需调研 mkarchiso）
 - **双盘支持**：当前脚本整盘格式化，可扩展多盘/双系统场景
+
+---
+
+## 八、滚挂防护（免插 U 盘）
+
+三层防御体系（snapper 快照回滚 + 本地 archiso 引导）：
+
+### 第一层：日常滚挂 → GRUB 快照回滚
+- **snapper**（已配置 root+home）+ **grub-btrfs**（已启用）
+- **snap-pac**（AUR）：`pacman -Syu` 前自动快照
+- 滚挂后：重启 → GRUB 菜单选 `@.snapshots/N/snapshot` → 直接回滚
+
+### 第二层：启动不了 → 本地 archiso
+- archiso 存 `/archiso/`（独立 btrfs 子卷 @archiso，不受 @ 快照影响）
+- GRUB 菜单项 "Arch Linux ISO (本地恢复)" 直接从本地进 live 环境
+- 进 live 后 chroot 修复 或 跑本仓库 install.sh
+
+### 第三层：彻底损坏 → U 盘（最后手段）
+
+### 配置脚本（setup/）
+```bash
+sudo bash setup/snapper-fix.sh     # 修 snapper 防误删 + 建 archiso 子卷
+sudo bash setup/snap-pac.sh        # 装 snap-pac + 移除 timeshift
+sudo cp archlinux-x86_64.iso /archiso/   # 下载 ISO
+sudo bash setup/grub-archiso.sh    # 配置 GRUB 菜单
+```
