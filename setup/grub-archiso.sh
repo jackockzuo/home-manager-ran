@@ -30,8 +30,13 @@ echo "✓ SEARCH_UUID=$SEARCH_UUID"
 echo ""
 echo "===== 创建 GRUB 自定义菜单 ====="
 # 写入 /etc/grub.d/41_custom（grub-mkconfig 自动包含的标准路径）
+# 注意：41_custom 是 shell 脚本，grub-mkconfig 会 source 它执行，
+# 必须用 cat << EOF 输出 menuentry，而非直接写 GRUB 命令
 cat > /etc/grub.d/41_custom << EOF
+#!/bin/sh
+set -e
 # 本地 archiso 恢复引导（免 U 盘）
+cat << GRUBEOF
 menuentry 'Arch Linux ISO (本地恢复)' --class arch --class os {
     insmod part_gpt
     insmod btrfs
@@ -40,7 +45,9 @@ menuentry 'Arch Linux ISO (本地恢复)' --class arch --class os {
     linux (loop)/arch/boot/x86_64/vmlinuz-linux archisobasedir=arch archisosearchuuid=${SEARCH_UUID} img_dev=/dev/disk/by-uuid/${DISK_UUID} img_loop=/@archiso/archlinux-x86_64.iso
     initrd (loop)/arch/boot/x86_64/initramfs-linux.img
 }
+GRUBEOF
 EOF
+chmod +x /etc/grub.d/41_custom
 
 echo "✓ GRUB 菜单已创建 /etc/grub.d/41_custom"
 echo ""
