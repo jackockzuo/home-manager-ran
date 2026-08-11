@@ -13,7 +13,7 @@
 # ============================================================
 set -euo pipefail
 
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
+RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
 info() { echo -e "${GREEN}[recover]${NC} $*"; }
 die()  { echo -e "${RED}[ERROR]${NC} $*" >&2; exit 1; }
 
@@ -27,8 +27,8 @@ if [ -z "${DISK:-}" ]; then
   [ -n "$BTRFS_DEV" ] || die "未找到 btrfs 分区，请用 DISK=/dev/xxx 指定"
   # 从分区设备反推整盘（nvme0n1p2 → nvme0n1）
   case "$BTRFS_DEV" in
-    *nvme*) DISK=$(echo "$BTRFS_DEV" | sed 's/p[0-9]*$//') ;;
-    *sd*|*vd*) DISK=$(echo "$BTRFS_DEV" | sed 's/[0-9]*$//') ;;
+    *nvme*) DISK="${BTRFS_DEV%p[0-9]*}" ;;
+    *sd*|*vd*) DISK="${BTRFS_DEV%[0-9]*}" ;;
   esac
 fi
 [ -b "$DISK" ] || die "磁盘不存在: $DISK"

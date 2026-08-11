@@ -17,7 +17,6 @@
     ./mpv.nix           # 视频播放
     ./filemanager.nix   # Thunar 右键动作 + 默认应用
     ./portal.nix        # xdg-desktop-portal
-    ./browser.nix       # Chrome 渲染后端 flags
   ];
 
   # 桌面环境必需的 CLI 工具（nix 管理；截图/剪贴板/U盘挂载）

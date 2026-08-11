@@ -93,7 +93,7 @@ run "parted -s ${DISK} mkpart primary btrfs 1GiB 100%"
 PART_EFI="${DISK}p1"; PART_ROOT="${DISK}p2"
 case "$DISK" in
   *nvme*) PART_EFI="${DISK}p1"; PART_ROOT="${DISK}p2" ;;
-  *sd*|*vd*|*xvd*) PART_EFI="${DISK}1"; PART_ROOT="${DISK}2" ;;
+  *sd*|*vd*) PART_EFI="${DISK}1"; PART_ROOT="${DISK}2" ;;
 esac
 
 info "格式化分区 ..."
@@ -115,7 +115,6 @@ run "mount ${PART_EFI} /mnt/boot"
 
 # ---------- 5. pacstrap 基础系统 ----------
 info "pacstrap 基础系统（可能需要几分钟下载）..."
-MIRRORLIST_URL="https://mirrors.tuna.tsinghua.edu.cn/archlinux/mirrorlist/archlinux-cn.txt"
 run "pacman -Sy --noconfirm archlinux-keyring"
 
 # 配置国内镜像（可选，网络好可跳过）

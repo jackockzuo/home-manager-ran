@@ -36,8 +36,12 @@ echo "✓ snap-pac 已安装"
 
 echo ""
 echo "===== [2/3] 验证 pacman hook 已生效 ====="
-ls /etc/pacman.d/hooks/ | grep -i snapper | head -5
-echo "✓ hook 文件存在（pacman -Syu 前自动快照）"
+found_hooks=0
+for hook in /etc/pacman.d/hooks/*snapper*; do
+  [ -e "$hook" ] && echo "  ✓ $(basename "$hook")" && found_hooks=1
+done
+[ "$found_hooks" = "1" ] || echo "⚠️ 未找到 snapper hook（可能 snap-pac 安装异常）"
+echo "✓ hook 检查完成（pacman -Syu 前自动快照）"
 
 echo ""
 echo "===== [3/3] 移除 timeshift ====="
