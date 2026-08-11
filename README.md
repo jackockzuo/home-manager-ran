@@ -272,8 +272,12 @@ home-manager switch --flake .#ran   # 应用
 
 ### 配置脚本（setup/）
 ```bash
-sudo bash setup/snapper-fix.sh     # 修 snapper 防误删 + 建 archiso 子卷
-sudo bash setup/snap-pac.sh        # 装 snap-pac + 移除 timeshift
-sudo cp archlinux-x86_64.iso /archiso/   # 下载 ISO
-sudo bash setup/grub-archiso.sh    # 配置 GRUB 菜单
+# 一键配置（推荐，需 root 运行一次，自动完成全部 4 步）
+sudo bash setup/guard.sh
+
+# 或手动分步执行：
+# sudo bash setup/snapper-fix.sh     # 修 snapper 防误删 + 建 archiso 子卷
+# sudo bash setup/snap-pac.sh        # 装 snap-pac + 移除 timeshift
+# sudo cp archlinux-x86_64.iso /archiso/   # 下载 ISO
+# sudo bash setup/grub-archiso.sh    # 配置 GRUB 菜单
 ```
