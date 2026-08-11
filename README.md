@@ -115,12 +115,15 @@ curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/set
 | 1 | 环境检测 | 确认 root + UEFI + /mnt 未挂载 |
 | 2 | 选择磁盘 | 交互或 `DISK=` 环境变量 |
 | 3 | 分区 | GPT：`p1` EFI 1G（FAT32）+ `p2` btrfs（剩余全部） |
-| 4 | 子卷 | btrfs 创建 `@`（根）`@home`（家目录） |
-| 5 | pacstrap | 基础包 + 45 个桌面二进制（niri/fcitx5/kitty/pipewire...） |
+| 4 | 子卷 | btrfs 创建 `@`（根）`@home`（家目录）`@archiso`（恢复用） |
+| 5 | pacstrap | 基础包 + 45 个桌面二进制 + `snapper grub-btrfs btrfs-progs`（滚挂防护） |
 | 6 | fstab | 按 UUID 生成挂载表 |
-| 7 | chroot 配置 | 时区/locale/hostname/用户/GRUB/服务 |
+| 7 | chroot 配置 | 时区/locale/hostname/用户/GRUB/服务 + **snapper 配置 + 定时器 + @archiso 挂载** |
 | 8 | nix + home-manager | 装 nix → clone 仓库 → `home-manager switch` 生成全部桌面配置 |
 | 9 | 收尾 | 卸载 /mnt，提示 reboot |
+
+> **滚挂防护已内置**：新装系统自动具备 snapper 快照 + grub-btrfs 回滚。
+> 装完后再补两步（见第八章）：`paru -S snap-pac` + 下载 ISO 到 /archiso 配置本地恢复引导。
 
 ### 3.4 免交互（自动化/CI 用）
 

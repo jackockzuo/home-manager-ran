@@ -93,10 +93,11 @@ run "mkfs.fat -F32 ${PART_EFI}"
 run "mkfs.btrfs -f ${PART_ROOT}"
 
 # ---------- 4. 挂载 + 创建子卷 ----------
-info "挂载并创建 btrfs 子卷（@/@home）..."
+info "挂载并创建 btrfs 子卷（@/@home/@archiso）..."
 run "mount ${PART_ROOT} /mnt"
 run "btrfs subvolume create /mnt/@"
 run "btrfs subvolume create /mnt/@home"
+run "btrfs subvolume create /mnt/@archiso"
 run "umount /mnt"
 run "mount -o subvol=@,compress=zstd:3,ssd ${PART_ROOT} /mnt"
 run "mkdir -p /mnt/home"
@@ -117,7 +118,7 @@ fi
 
 # 基础包 + 桌面二进制（desktop-packages.txt 与本脚本同目录）
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BASE_PKGS="base linux linux-firmware base-devel networkmanager git curl vim sudo fish grub efibootmgr"
+BASE_PKGS="base linux linux-firmware base-devel networkmanager git curl vim sudo fish grub efibootmgr snapper grub-btrfs btrfs-progs"
 DESKTOP_PKGS="$(grep -vE '^\s*#|^\s*$' "${SCRIPT_DIR}/desktop-packages.txt" | sed 's/#.*$//' | tr '\n' ' ')"
 
 info "安装基础包 + 桌面组件（niri/fcitx5/kitty/pipewire 等）..."
@@ -170,6 +171,28 @@ systemctl enable NetworkManager bluetooth greetd
 # pipewire 用户服务（pacman 装后默认存在 unit，enable 到用户）
 systemctl enable --global pipewire.socket pipewire-pulse.socket wireplumber.service 2>/dev/null || true
 
+# ===== 滚挂防护（snapper + grub-btrfs）=====
+# 1. 创建 snapper 配置（root + home）
+snapper -c root create-config /
+snapper -c home create-config /home 2>/dev/null || true
+
+# 2. 修复 timeline 快照被误删（MIN_AGE 3600→60，FREE_LIMIT 放宽）
+sed -i 's/^TIMELINE_MIN_AGE=.*/TIMELINE_MIN_AGE="60"/' /etc/snapper/configs/root
+sed -i 's/^FREE_LIMIT=.*/FREE_LIMIT="5"/' /etc/snapper/configs/root
+sed -i 's/^TIMELINE_MIN_AGE=.*/TIMELINE_MIN_AGE="60"/' /etc/snapper/configs/home 2>/dev/null || true
+
+# 3. 启用 snapper 定时器（自动快照 + 清理）
+systemctl enable snapper-timeline.timer snapper-cleanup.timer
+
+# 4. 配置 /archiso 挂载（滚挂恢复用本地 archiso 引导）
+mkdir -p /archiso
+BTRFS_DEV=$(findmnt -no SOURCE / | sed 's/\[.*//')
+grep -q '/archiso' /etc/fstab || echo "${BTRFS_DEV}  /archiso  btrfs  subvol=@archiso,compress=zstd:3  0  0" >> /etc/fstab
+
+# 5. GRUB 收录快照（grub-btrfs 自动生成快照启动项）
+systemctl enable grub-btrfsd.service 2>/dev/null || true
+grub-mkconfig -o /boot/grub/grub.cfg 2>/dev/null
+
 CHROOTEOF
 chmod +x "$CHROOT_SCRIPT"
 run "cp '$CHROOT_SCRIPT' /mnt/root/install-chroot.sh"
@@ -211,4 +234,12 @@ info "  1. reboot 进入新系统"
 info "  2. 登录 DMS greeter → niri 桌面"
 info "  3. 若需更多应用: sudo pacman -S <包名>（个体应用不在此脚本范围）"
 info "  4. 更新配置: cd ~/dotfiles && git pull && home-manager switch"
+info ""
+info " 滚挂防护已内置（snapper + grub-btrfs）："
+info "   • pacman -Syu 前自动快照：需装 snap-pac（AUR，手动执行）"
+info "     paru -S snap-pac"
+info "   • 本地 archiso 恢复引导：装完系统后下载 ISO"
+info "     sudo curl -L -o /archiso/archlinux-x86_64.iso \\"
+info "       https://mirrors.tuna.tsinghua.edu.cn/archlinux/iso/latest/archlinux-x86_64.iso"
+info "     然后运行: sudo bash ~/dotfiles/setup/grub-archiso.sh"
 info "=============================================="
