@@ -27,16 +27,22 @@ echo "✓ 快照创建成功"
 
 echo ""
 echo "===== [3/4] 创建本地 archiso 子卷 ====="
-# 在 btrfs 内建独立子卷存 archiso（零分区风险，独立于 @ 快照）
+# 在 btrfs 内建独立顶层子卷存 archiso（零分区风险，独立于 @ 快照）
+# 标准做法：先挂载分区顶层(subvolid=5)，在顶层创建 @archiso，避免嵌套子卷
+BTRFS_DEV=$(findmnt -no SOURCE / | sed 's/\[.*//')  # 取分区设备（如 /dev/nvme1n1p2）
 if ! btrfs subvolume list / | grep -q '@archiso'; then
-  btrfs subvolume create /@archiso
-  echo "✓ 子卷 @archiso 已创建"
+  mkdir -p /tmp/btrfs-top
+  mount -o subvolid=5 "$BTRFS_DEV" /tmp/btrfs-top
+  btrfs subvolume create /tmp/btrfs-top/@archiso
+  umount /tmp/btrfs-top
+  rmdir /tmp/btrfs-top
+  echo "✓ 顶层子卷 @archiso 已创建"
 else
   echo "✓ @archiso 已存在"
 fi
 mkdir -p /archiso
-mount -o subvol=@archiso,compress=zstd:3 /dev/nvme1n1p2 /archiso || true
-grep -q '@archiso' /etc/fstab || echo "/dev/nvme1n1p2  /archiso  btrfs  subvol=@archiso,compress=zstd:3  0  0" >> /etc/fstab
+grep -q '/archiso' /etc/fstab || echo "$BTRFS_DEV  /archiso  btrfs  subvol=@archiso,compress=zstd:3  0  0" >> /etc/fstab
+mount -a || true
 echo "✓ /archiso 挂载点已配置（fstab）"
 
 echo ""

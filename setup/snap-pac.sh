@@ -12,13 +12,14 @@ set -euo pipefail
 [ "$(id -u)" = "0" ] || { echo "需 root: sudo bash $0"; exit 1; }
 
 echo "===== [1/3] 安装 snap-pac ====="
-# snap-pac 在 AUR；优先 paru，否则用 pacman 装后补
+# snap-pac 在 AUR，必须以普通用户运行 AUR 助手
+AUR_USER="${SUDO_USER:-$USER}"
 if command -v paru >/dev/null 2>&1; then
-  su - ran -c "paru -S --noconfirm snap-pac" || paru -S --noconfirm snap-pac
+  su - "$AUR_USER" -c "paru -S --noconfirm snap-pac"
 elif command -v yay >/dev/null 2>&1; then
-  su - ran -c "yay -S --noconfirm snap-pac"
+  su - "$AUR_USER" -c "yay -S --noconfirm snap-pac"
 else
-  echo "⚠️ 无 AUR 助手，请手动安装 snap-pac（AUR）"
+  echo "⚠️ 无 AUR 助手，请以用户 $AUR_USER 手动安装 snap-pac（AUR）"
   exit 1
 fi
 echo "✓ snap-pac 已安装"
