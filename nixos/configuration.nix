@@ -1,5 +1,6 @@
 # ============================================================
-# NixOS 系统配置 —— VM 测试用（为迁移 NixOS 做准备）
+# NixOS 系统配置 —— 共享部分（VM 与实机通用）
+# 硬件差异在 hardware-vm.nix / hardware-laptop.nix 中声明
 # 与 Arch 版对比：
 #   Arch:   niri/hyprlock/kitty/mpv 等桌面组件由 pacman 管理
 #   NixOS:  全部由 NixOS 系统模块管理（system packages / services）
@@ -23,7 +24,6 @@
   users.defaultUserShell = pkgs.fish;
 
   # ---------- 网络 ----------
-  networking.hostName = "nixos-vm";
   networking.networkmanager.enable = true;
 
   # ---------- 桌面组件（原 pacman 管理 → NixOS 包） ----------
@@ -41,7 +41,7 @@
     slurp
     wl-clipboard
     cliphist
-    # 系统工具（VM 用 virtio-gpu，无 NVIDIA，不需要 nvidia-settings）
+    # 系统工具
     xdg-desktop-portal-gnome
     polkit_gnome
     # 输入法
@@ -76,34 +76,12 @@
   # ---------- 桌面会话 ----------
   programs.fish.enable = true;
   programs.dconf.enable = true; # GTK 应用需要
-  # xdg.portal 统一在下方定义（含 extraPortals）
-
-  # ---------- NVIDIA ----------
-  # VM 内用 virtio-gpu，无需 NVIDIA 配置（真实机迁移时启用）
-  # hardware.nvidia = {
-  #   modesetting.enable = true;
-  #   open = true;
-  # };
 
   # ---------- home-manager（复用现有配置） ----------
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
     users.ran = import ../home.nix;
-  };
-
-  # ---------- 系统优化 ----------
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # ---------- 文件系统（VM 安装时用 nixos-generate-config 生成真实 UUID） ----------
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/REPLACE_WITH_ROOT_UUID";
-    fsType = "ext4";
-  };
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/REPLACE_WITH_EFI_UUID";
-    fsType = "vfat";
   };
 
   # ---------- XDG Portal（需指定具体实现，否则断言失败） ----------

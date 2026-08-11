@@ -1,5 +1,5 @@
 {
-  description = "ran 的系统配置：Arch 用 home-manager，NixOS 用 nixosConfigurations + home-manager";
+  description = "ran 的 dotfiles：Arch 桌面环境（nix 管配置/工具链）+ home-manager 分层管理";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -13,27 +13,31 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      # home-manager 通用参数
+      hmConfig = modules: home-manager.lib.homeManagerConfiguration {
+        inherit pkgs modules;
+      };
     in {
       # ============ Arch（当前主力系统）============
-      # 用法: home-manager switch --flake .#ran
-      homeConfigurations."ran" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+      # 完整配置（桌面 + 工具链）: home-manager switch --flake .#ran
+      homeConfigurations."ran" = hmConfig [
+        ./home.nix
+      ];
 
-        # 注意：modules 是列表 [ ]，结尾用 ]; 闭合
-        modules = [
-          ./home.nix
-        ];
-      };
+      # 纯净桌面版（只桌面环境，无开发工具链）: home-manager switch --flake .#ran-desktop
+      homeConfigurations."ran-desktop" = hmConfig [
+        ./modules/core.nix
+        ./modules/desktop
+      ];
 
-      # ============ NixOS（迁移目标，VM 测试用）============
+      # ============ NixOS（预留，暂不使用）============
       # 用法: sudo nixos-rebuild switch --flake .#nixos-vm
-      # 注意：home-manager.users.ran 已在 nixos/configuration.nix 中导入 home.nix，
-      # 这里不再重复，避免选项重复定义
       nixosConfigurations."nixos-vm" = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
           ./nixos/configuration.nix
           home-manager.nixosModules.home-manager
+          ./nixos/hardware-vm.nix
         ];
       };
     };

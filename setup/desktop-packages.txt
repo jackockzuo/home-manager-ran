@@ -1,0 +1,75 @@
+# ============================================================
+# desktop-packages.txt —— 桌面环境 pacman 包清单
+# 原则：GPU/图形相关二进制由 pacman 安装（避免 nix 的 GUI 兼容问题），
+#       nix 只管理配置文件（见 modules/desktop/）
+# 安装：sudo pacman -S --needed $(grep -vE '^\s*#|^\s*$' 本文件)
+# ============================================================
+
+# ---------- 合成器/窗口（GPU 相关，必须 pacman） ----------
+niri
+
+# ---------- 锁屏/登录 ----------
+hyprlock
+greetd
+greetd-dms-greeter-bin
+
+# ---------- 桌面壳（DMS） ----------
+dms-shell
+
+# ---------- 终端 ----------
+kitty
+
+# ---------- 输入法 ----------
+fcitx5
+fcitx5-chinese-addons
+fcitx5-configtool
+fcitx5-gtk
+fcitx5-lua
+fcitx5-pinyin-zhwiki
+fcitx5-qt
+fcitx5-rime
+catppuccin-fcitx5-git
+
+# ---------- 音频（GPU 相关，pacman） ----------
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+pavucontrol
+
+# ---------- 通知 ----------
+swaync-git          # 需 git 版（含 background-blur 毛玻璃支持）
+
+# ---------- 系统集成 ----------
+xdg-desktop-portal-gnome
+xdg-utils
+gnome-keyring
+network-manager-applet
+brightnessctl
+polkit
+
+# ---------- 字体（GPU 渲染相关） ----------
+noto-fonts-cjk
+noto-fonts-extra
+adobe-source-han-sans-cn-fonts
+adobe-source-han-sans-otc-fonts
+adobe-source-han-serif-otc-fonts
+ttf-dejavu
+ttf-jetbrains-mono-nerd
+ttf-maplemono
+ttf-maplemono-nf-cn-unhinted
+ttf-maplemono-nf-unhinted
+
+# ---------- 主题（GTK/Qt） ----------
+catppuccin-gtk-theme-git
+catppuccin-qt5ct-git
+qt5ct
+qt6ct
+gtk2
+
+# ---------- XWayland（GPU 相关） ----------
+xwayland-satellite
+
+# ---------- 桌面壁纸/动效 ----------
+mpvpaper

@@ -15,7 +15,7 @@
 
   # 静态主题目录（DMS 只读，可 symlink）
   xdg.configFile."DankMaterialShell/themes" = {
-    source = ../source/dms/themes;
+    source = ../../source/dms/themes;
     recursive = true;
     force = true; # 覆盖已存在的真实目录（内容与快照一致）
   };
@@ -24,7 +24,7 @@
   home.activation.restoreDmsConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p "$HOME/.config/DankMaterialShell"
     if [ ! -e "$HOME/.config/DankMaterialShell/settings.json" ]; then
-      $DRY_RUN_CMD cp -r "${../source/dms}/." "$HOME/.config/DankMaterialShell/"
+      $DRY_RUN_CMD cp -r "${../../source/dms}/." "$HOME/.config/DankMaterialShell/"
       $DRY_RUN_CMD chmod -R u+w "$HOME/.config/DankMaterialShell"
     fi
   '';
