@@ -11,14 +11,13 @@
 
   outputs = { nixpkgs, home-manager, ... }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
       # home-manager 通用参数
       hmConfig = modules: home-manager.lib.homeManagerConfiguration {
         inherit pkgs modules;
       };
     in {
-      # ============ Arch（当前主力系统）============
+      # ============ Arch 桌面 ============
       # 完整配置（桌面 + 工具链）: home-manager switch --flake .#ran
       homeConfigurations."ran" = hmConfig [
         ./home.nix
@@ -29,16 +28,5 @@
         ./modules/core.nix
         ./modules/desktop
       ];
-
-      # ============ NixOS（预留，暂不使用）============
-      # 用法: sudo nixos-rebuild switch --flake .#nixos-vm
-      nixosConfigurations."nixos-vm" = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [
-          ./nixos/configuration.nix
-          home-manager.nixosModules.home-manager
-          ./nixos/hardware-vm.nix
-        ];
-      };
     };
 }
