@@ -63,6 +63,14 @@ if [ -z "${DISK:-}" ]; then
   fi
 fi
 [ -b "$DISK" ] || die "磁盘不存在: $DISK"
+
+# 幂等保护：目标盘已有分区表时拒绝覆盖（除非 FORCE=1 显式要求重装）
+if [ "${DRY_RUN:-0}" != "1" ] && [ "${FORCE:-0}" != "1" ]; then
+  if parted -s "$DISK" print >/dev/null 2>&1 && parted -s "$DISK" print 2>/dev/null | grep -q 'Number'; then
+    die "磁盘 ${DISK} 已有分区（检测到数据），为防止误覆盖已中止。确认重装请加 FORCE=1"
+  fi
+fi
+
 warn "即将格式化 ${DISK} 全部数据！"
 if [ "${DRY_RUN:-0}" != "1" ] && [ "${AUTO:-0}" != "1" ]; then
   read -rp "确认输入 yes 继续: " confirm

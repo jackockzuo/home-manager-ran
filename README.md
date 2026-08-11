@@ -284,3 +284,59 @@ sudo bash setup/guard.sh
 # sudo cp archlinux-x86_64.iso /archiso/   # 下载 ISO
 # sudo bash setup/grub-archiso.sh    # 配置 GRUB 菜单
 ```
+
+---
+
+## 九、滚挂了怎么办（故障速查）
+
+### 场景 1：能进 GRUB，系统起不来（最常见）
+
+重启 → GRUB 菜单选 **旧快照**（`Arch Linux snapshots` 子菜单下的 @.snapshots/N）→ 进入升级前状态。
+
+```bash
+# 确认回滚成功后可删除坏快照
+sudo snapper -c root delete <坏快照号>
+```
+
+### 场景 2：GRUB 能进，但没有可用快照
+
+重启 → GRUB 选 **"Arch Linux ISO (本地恢复)"** → 进 live 环境：
+
+```bash
+# 一键挂载 + chroot（自动检测盘）
+curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/setup/recover.sh | bash
+
+# 进入 chroot 后：
+snapper -c root list          # 找可用快照
+snapper -c root rollback N    # 回滚
+# 或重装坏包：
+pacman -Syu
+```
+
+### 场景 3：GRUB 都进不去（引导损坏）
+
+用 U 盘 archiso 启动 → live 环境：
+
+```bash
+# 重新安装 GRUB（先挂载，用 recover.sh 或手动）
+bash <(curl -sSL .../setup/recover.sh)
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+### 场景 4：彻底损坏，重装
+
+```bash
+curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/setup/install.sh | bash
+# 重装后滚挂防护自动内置，再补 snap-pac + ISO（见第八章）
+```
+
+### 恢复工具清单（setup/）
+
+| 脚本 | 用途 |
+|---|---|
+| `recover.sh` | live 环境一键挂载 + chroot |
+| `install.sh` | 全新安装（含滚挂防护） |
+| `grub-archiso.sh` | 配置本地 archiso GRUB 引导 |
+| `snapper-fix.sh` | 修复/重建 snapper 防护 |
+| `snap-pac.sh` | 安装升级前自动快照 |
