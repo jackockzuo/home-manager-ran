@@ -102,13 +102,20 @@
   };
 
   # ---- 8. 默认应用 (mimeapps) ----
-  # 效果：图片→imv、视频→mpv、文本→nvim、目录→nautilus
+  # 效果：图片→imv、视频→mpv、文本→nvim、目录→nautilus、网页→firefox
   # 跳过了 .exe 走 shorin-proton-wrapper 的项（Arch shorin 专属）
   xdg.configFile."mimeapps.list".force = true;
   xdg.dataFile."applications/mimeapps.list".force = true;
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
+      # 浏览器（Firefox 为默认）
+      "text/html" = "firefox.desktop";
+      "application/xhtml+xml" = "firefox.desktop";
+      "x-scheme-handler/http" = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "x-scheme-handler/about" = "firefox.desktop";
+      "x-scheme-handler/unknown" = "firefox.desktop";
       "image/png" = "imv.desktop";
       "image/jpeg" = "imv.desktop";
       "image/gif" = "imv.desktop";
