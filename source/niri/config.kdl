@@ -209,3 +209,11 @@ hotkey-overlay {
 
 // 隐藏窗口标题栏
 prefer-no-csd
+
+// 修复 NVIDIA + Chrome/Electron Wayland 滚动闪烁
+// 根因：niri 未实现 linux-drm-syncobj-v1（explicit sync），NVIDIA 隐式同步竞态
+// 方案：等待帧完成再排队，规避缓冲竞态（niri #2477 / discussion #3777 验证）
+debug {
+    wait-for-frame-completion-before-queueing
+}
+

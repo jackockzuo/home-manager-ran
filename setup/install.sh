@@ -21,6 +21,7 @@
 #   USERNAME=   用户名（默认 ran）
 #   PASSWORD=   用户密码（默认交互输入）
 #   REPO_URL=   配置仓库（默认 GitHub public）
+#   AUTO=1      跳过所有交互确认（自动化/CI/VM 测试用）
 #   DRY_RUN=1   只打印要执行的命令，不真正执行（测试用）
 # ============================================================
 set -euo pipefail
@@ -63,14 +64,14 @@ if [ -z "${DISK:-}" ]; then
 fi
 [ -b "$DISK" ] || die "磁盘不存在: $DISK"
 warn "即将格式化 ${DISK} 全部数据！"
-if [ "${DRY_RUN:-0}" != "1" ]; then
+if [ "${DRY_RUN:-0}" != "1" ] && [ "${AUTO:-0}" != "1" ]; then
   read -rp "确认输入 yes 继续: " confirm
   [ "$confirm" = "yes" ] || die "已取消"
 fi
 
 HOSTNAME="${HOSTNAME:-archlinux}"
 USERNAME="${USERNAME:-ran}"
-if [ -z "${PASSWORD:-}" ] && [ "${DRY_RUN:-0}" != "1" ]; then
+if [ -z "${PASSWORD:-}" ] && [ "${DRY_RUN:-0}" != "1" ] && [ "${AUTO:-0}" != "1" ]; then
   read -rsp "设置用户 ${USERNAME} 的密码: " PASSWORD; echo
 fi
 REPO_URL="${REPO_URL:-https://github.com/jackockzuo/home-manager-ran.git}"
@@ -116,7 +117,7 @@ fi
 
 # 基础包 + 桌面二进制（desktop-packages.txt 与本脚本同目录）
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BASE_PKGS="base linux linux-firmware base-devel networkmanager git curl vim sudo fish"
+BASE_PKGS="base linux linux-firmware base-devel networkmanager git curl vim sudo fish grub efibootmgr"
 DESKTOP_PKGS="$(grep -vE '^\s*#|^\s*$' "${SCRIPT_DIR}/desktop-packages.txt" | sed 's/#.*$//' | tr '\n' ' ')"
 
 info "安装基础包 + 桌面组件（niri/fcitx5/kitty/pipewire 等）..."
@@ -154,7 +155,7 @@ cat > /etc/hosts << EOF
 EOF
 
 # 用户
-useradd -m -G wheel,audio,video,networkmanager -s /usr/bin/fish "$USERNAME"
+useradd -m -G wheel,audio,video,network -s /usr/bin/fish "$USERNAME"
 echo "$USERNAME:$PASSWORD" | chpasswd
 echo "$USERNAME ALL=(ALL) ALL" > /etc/sudoers.d/10-$USERNAME
 chmod 440 /etc/sudoers.d/10-$USERNAME
