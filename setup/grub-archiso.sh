@@ -29,9 +29,8 @@ echo "✓ SEARCH_UUID=$SEARCH_UUID"
 
 echo ""
 echo "===== 创建 GRUB 自定义菜单 ====="
-mkdir -p /boot/grub/custom
-
-cat > /boot/grub/custom/archiso.cfg << EOF
+# 写入 /etc/grub.d/41_custom（grub-mkconfig 自动包含的标准路径）
+cat > /etc/grub.d/41_custom << EOF
 # 本地 archiso 恢复引导（免 U 盘）
 menuentry 'Arch Linux ISO (本地恢复)' --class arch --class os {
     insmod part_gpt
@@ -43,7 +42,7 @@ menuentry 'Arch Linux ISO (本地恢复)' --class arch --class os {
 }
 EOF
 
-echo "✓ GRUB 菜单已创建 /boot/grub/custom/archiso.cfg"
+echo "✓ GRUB 菜单已创建 /etc/grub.d/41_custom"
 echo ""
 echo "===== 重新生成 grub.cfg ====="
 grub-mkconfig -o /boot/grub/grub.cfg 2>&1 | tail -5
