@@ -3,6 +3,7 @@
 # 本文件为模板：实机安装时，运行 nixos-generate-config --root /mnt 后
 # 用生成的 /mnt/etc/nixos/hardware-configuration.nix 覆盖本文件
 # （flake 引用本文件提供真实 UUID 的 fileSystems）
+# 注意：CPU 为 Intel i9-13900HX（kvm-intel + intel microcode）
 # ============================================================
 { config, lib, pkgs, modulesPath, ... }:
 
@@ -11,7 +12,7 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
+  boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
@@ -36,5 +37,5 @@
   networking.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
