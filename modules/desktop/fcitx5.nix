@@ -1,8 +1,10 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # 1. 启用 Fcitx5 并加入 fcitx5-rime (中州韵) 引擎
-  i18n.inputMethod = {
+  # NixOS 兼容：系统层 nixos-config 已用 i18n.inputMethod.enabled="fcitx5"，
+  # 此处仅在 Arch 单机（useGlobalPkgs=false）时生效，NixOS 上跳过避免双份管理
+  i18n.inputMethod = lib.mkIf (!config.home-manager.useGlobalPkgs or false) {
     enable = true;
     type = "fcitx5";
     fcitx5 = {

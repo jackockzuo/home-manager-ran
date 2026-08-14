@@ -3,7 +3,7 @@
 # 职责：用户身份、Wayland 环境变量、nix 自身配置、垃圾回收
 # 不包含：桌面组件、开发工具（分别由 desktop/ tools/ 提供）
 # ============================================================
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # ---------- 用户 ----------
@@ -59,7 +59,8 @@
   xdg.configFile."nix/nix.conf".force = true;
 
   # ===== Nix 自动垃圾回收（每周，保留 14 天回滚历史）=====
-  systemd.user.services."nix-gc" = {
+  # NixOS 兼容：系统层 nixos-config 已设 nix.gc.automatic，此处仅 Arch 单机生效
+  systemd.user.services."nix-gc" = lib.mkIf (!config.home-manager.useGlobalPkgs or false) {
     Unit.Description = "Nix store garbage collection";
     Service = {
       Type = "oneshot";
@@ -74,7 +75,7 @@
     };
   };
 
-  systemd.user.timers."nix-gc" = {
+  systemd.user.timers."nix-gc" = lib.mkIf (!config.home-manager.useGlobalPkgs or false) {
     Unit.Description = "Weekly Nix store garbage collection";
     Timer = {
       OnCalendar = "weekly";
