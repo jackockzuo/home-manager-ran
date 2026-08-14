@@ -68,9 +68,8 @@ grep -A3 'fileSystems' /mnt/dotfiles/nixos/hardware-configuration.nix
 ## 5. 安装
 
 ```bash
-# 进 chroot 安装（用 flake）
-cd /mnt/dotfiles
-nixos-install --flake .#laptop --root /mnt
+# 进 chroot 安装（用 flake，绝对路径避免 chroot 后相对路径失效）
+nixos-install --flake /mnt/dotfiles#laptop --root /mnt
 # 若 flake 拉取慢，可先设置代理或稍等
 
 # 设置用户密码（initialPassword=nixos，安装后改）
