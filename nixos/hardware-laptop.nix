@@ -33,6 +33,11 @@
     wget
     curl
     networkmanagerapplet
+    # 网络诊断（联网排障/查资料必需）
+    dnsutils        # dig/nslookup（DNS 查询）
+    traceroute      # 路由追踪
+    inetutils       # ping/telnet 等基础网络工具
+    openssh         # ssh/scp 远程连接
   ];
 
   # ---------- 滚挂防护（snapper 快照回滚） ----------
