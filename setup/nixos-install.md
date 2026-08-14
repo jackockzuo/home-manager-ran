@@ -93,10 +93,23 @@ ping -c 2 baidu.com
 echo $XDG_CURRENT_DESKTOP   # 应输出 Niri
 # 输入法
 fcitx5-remote -t
-# 更新配置
-cd ~/dotfiles && git pull && sudo nixos-rebuild switch --flake .#laptop
 # 滚挂防护
 snapper -c root list
+```
+
+### 7.1 把 dotfiles clone 到 home（安装时 flake 在 /mnt/dotfiles，日常更新需要 ~/dotfiles）
+
+```bash
+# clone 到 home（home-manager 配置的 dotfiles 路径）
+git clone https://github.com/jackockzuo/home-manager-ran.git ~/dotfiles
+# 若需要，也把安装时生成的硬件配置同步过来
+cp /etc/nixos/hardware-configuration.nix ~/dotfiles/nixos/ 2>/dev/null || true
+```
+
+### 7.2 日常更新配置
+
+```bash
+cd ~/dotfiles && git pull && sudo nixos-rebuild switch --flake .#laptop
 ```
 
 ## 8. Chrome 配置（NVIDIA 兼容，迁移后必做）
