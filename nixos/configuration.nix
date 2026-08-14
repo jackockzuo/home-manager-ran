@@ -87,10 +87,6 @@
   # ---------- 系统优化 ----------
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  # 定时清理 nix 历史
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
-  };
+  # GC 由 home-manager 的用户级 nix-gc 负责（清理 HM 旧代 + nix-store --gc），
+  # 不再设置系统级 nix.gc 避免重复
 }

@@ -12,7 +12,9 @@
   home.stateVersion = "24.05";
 
   # 允许 unfree 包（unrar 等工具需要）
-  nixpkgs.config.allowUnfree = true;
+  # mkDefault：Arch 单机版生效；NixOS 上由系统层 nixpkgs.config 覆盖，
+  # 避免与 home-manager useGlobalPkgs 冲突（警告：useGlobalPkgs 下不应设 nixpkgs.config）
+  nixpkgs.config.allowUnfree = lib.mkDefault true;
 
   programs.home-manager.enable = true;
 
