@@ -1,5 +1,5 @@
 {
-  description = "ran 的 dotfiles：Arch 桌面环境（nix 管配置/工具链）+ home-manager 分层管理";
+  description = "ran 的 dotfiles：Arch/NixOS 双系统配置（nix 管配置/工具链）";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -17,16 +17,28 @@
         inherit pkgs modules;
       };
     in {
-      # ============ Arch 桌面 ============
-      # 完整配置（桌面 + 工具链）: home-manager switch --flake .#ran
+      # ============ Arch（迁移前的当前系统，保留作对比） ============
+      # 用法: home-manager switch --flake .#ran
       homeConfigurations."ran" = hmConfig [
         ./home.nix
       ];
 
-      # 纯净桌面版（只桌面环境，无开发工具链）: home-manager switch --flake .#ran-desktop
+      # 纯净桌面版（只桌面环境）: home-manager switch --flake .#ran-desktop
       homeConfigurations."ran-desktop" = hmConfig [
         ./modules/core.nix
         ./modules/desktop
       ];
+
+      # ============ NixOS（迁移目标） ============
+      # 实机安装: sudo nixos-install --flake .#laptop
+      # 更新: sudo nixos-rebuild switch --flake .#laptop
+      nixosConfigurations."laptop" = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./nixos/configuration.nix
+          home-manager.nixosModules.home-manager
+          ./nixos/hardware-laptop.nix
+        ];
+      };
     };
 }
