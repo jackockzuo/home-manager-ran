@@ -2,21 +2,8 @@
 
 > 目标：nvme1n1 整盘装 NixOS（保留 nvme0n1 Windows 不动）
 > 配置：flake `.#laptop`（已构建验证，含联网工具+桌面+滚挂防护）
-> 前置：U 盘 + 已备份数据
-
-## 0. 迁移前备份（必须，nvme1n1 会被格式化）
-
-```bash
-# 备份到 nvme0n1p5（2G ext4，Windows 恢复盘）或外接盘
-sudo mkdir -p /mnt/backup
-sudo mount /dev/nvme0n1p5 /mnt/backup   # 或外接盘 /dev/sdX1
-sudo rsync -av --exclude='.cache' /home/ran/Documents /mnt/backup/
-sudo rsync -av --exclude='.cache' /home/ran/Pictures /mnt/backup/
-sudo rsync -av /home/ran/Downloads /mnt/backup/
-sudo rsync -av ~/.config/google-chrome ~/.mozilla /mnt/backup/dotfiles-config/
-sudo umount /mnt/backup
-# dotfiles 已在 GitHub（main 分支），无需额外备份
-```
+> 前置：U 盘
+> 迁移资产：dotfiles 仓库（已在 GitHub，含全部 nix 配置，无需额外备份）
 
 ## 1. 制作 NixOS 安装 U 盘
 
