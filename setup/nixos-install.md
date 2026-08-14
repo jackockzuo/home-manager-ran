@@ -100,17 +100,6 @@ cd ~/dotfiles && git pull && sudo nixos-rebuild switch --flake .#laptop
 snapper -c root list
 ```
 
-## 常见问题
-
-| 问题 | 解决 |
-|---|---|
-| 安装卡在下载 flake | 配置代理或换网络 |
-| nvidia 黑屏 | 配置已含 hardware.nvidia，若仍黑屏加 `boot.kernelParams = ["nvidia_drm.modeset=1"]` |
-| 中文字体 | 配置已含 noto-fonts-cjk-sans |
-| 浏览器打不开 | firefox/chromium 已内置，检查网络 |
-| Chrome 模糊玻璃/不显示 | NVIDIA + Vulkan 兼容问题，装完执行下方 Chrome flags 配置 |
-
-
 ## 8. Chrome 配置（NVIDIA 兼容，迁移后必做）
 
 用户主浏览器是 Chrome，NVIDIA 下需要 X11 模式 flags（与 Arch 验证过的相同）：
@@ -129,3 +118,14 @@ pkill -f chrome; google-chrome-stable &
 ```
 
 > 原理：Chrome 151 默认 Vulkan 后端在 nvidia 上渲染器初始化失败（只显示模糊玻璃），强制 GL/X11 模式可解决。
+## 9. 常见问题
+
+| 问题 | 解决 |
+|---|---|
+| 安装卡在下载 flake | 配置代理或换网络 |
+| nvidia 黑屏 | 配置已含 hardware.nvidia，若仍黑屏加 `boot.kernelParams = ["nvidia_drm.modeset=1"]` |
+| 中文字体 | 配置已含 noto-fonts-cjk-sans |
+| 浏览器打不开 | firefox/chromium 已内置，检查网络 |
+| Chrome 模糊玻璃/不显示 | NVIDIA + Vulkan 兼容问题，装完执行下方 Chrome flags 配置 |
+
+
