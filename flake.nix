@@ -38,6 +38,8 @@
           ./nixos/configuration.nix
           home-manager.nixosModules.home-manager
           ./nixos/hardware-laptop.nix
+          # 安装时由 nixos-generate-config 生成，覆盖为真实 UUID（见 nixos-install.md）
+          ./nixos/hardware-configuration.nix
         ];
       };
     };

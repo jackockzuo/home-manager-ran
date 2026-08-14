@@ -51,23 +51,18 @@ mount /dev/nvme1n1p1 /mnt/boot
 ## 4. 生成硬件配置 + 拉取 flake
 
 ```bash
-# 生成硬件配置（真实 UUID）
+# 1) 生成硬件配置（真实 UUID）
 nixos-generate-config --root /mnt
 
-# 拉取 dotfiles（GitHub public）
+# 2) 拉取 dotfiles（GitHub public）
 git clone https://github.com/jackockzuo/home-manager-ran.git /mnt/dotfiles
 
-# 用生成的硬件 UUID 替换占位符（手动替换，勿复制整个 hardware-configuration.nix，
-# 否则与 hardware-laptop.nix 的 fileSystems 重复定义会报错）
-# 1) 查看真实 UUID：
-grep -E 'by-uuid|by-label' /mnt/etc/nixos/hardware-configuration.nix
-# 2) 编辑 /mnt/dotfiles/nixos/hardware-laptop.nix 替换 3 个占位符：
-#    REPLACE_WITH_ROOT_UUID → 根 btrfs 分区 UUID
-#    REPLACE_WITH_HOME_UUID → 同分区（home 是子卷，用同一 UUID）
-#    REPLACE_WITH_EFI_UUID  → EFI 分区 UUID
-sed -i 's/REPLACE_WITH_ROOT_UUID/<根UUID>/' /mnt/dotfiles/nixos/hardware-laptop.nix
-sed -i 's/REPLACE_WITH_HOME_UUID/<根UUID>/' /mnt/dotfiles/nixos/hardware-laptop.nix
-sed -i 's/REPLACE_WITH_EFI_UUID/<EFI-UUID>/' /mnt/dotfiles/nixos/hardware-laptop.nix
+# 3) 用生成的 hardware-configuration.nix 覆盖仓库模板
+#    （flake 已引用 ./nixos/hardware-configuration.nix，真实 UUID 自动生效）
+cp /mnt/etc/nixos/hardware-configuration.nix /mnt/dotfiles/nixos/hardware-configuration.nix
+
+# 4) 确认 fileSystems 已包含真实 UUID（应看到 btrfs 分区和子卷）
+grep -A3 'fileSystems' /mnt/dotfiles/nixos/hardware-configuration.nix
 ```
 
 ## 5. 安装

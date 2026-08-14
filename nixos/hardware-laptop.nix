@@ -1,6 +1,8 @@
 # ============================================================
 # 实机硬件配置 —— RTX 4060 Laptop（闭源驱动）
 # 用于 nvme1n1 全新安装 NixOS（Arch 盘整体让位）
+# 注意：fileSystems 由安装时 nixos-generate-config 生成的
+#       hardware-configuration.nix 提供（本文件不定义，避免冲突）
 # ============================================================
 { config, pkgs, lib, ... }:
 
@@ -11,22 +13,6 @@
   # ---------- 引导 ----------
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  # ---------- 文件系统（实机安装时用 nixos-generate-config 生成真实 UUID） ----------
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/REPLACE_WITH_ROOT_UUID";
-    fsType = "btrfs";
-    options = [ "compress=zstd:3" "ssd" "discard=async" ];
-  };
-  fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/REPLACE_WITH_HOME_UUID";
-    fsType = "btrfs";
-    options = [ "compress=zstd:3" "ssd" "discard=async" ];
-  };
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/REPLACE_WITH_EFI_UUID";
-    fsType = "vfat";
-  };
 
   # ---------- NVIDIA（闭源驱动，与 Arch 一致） ----------
   hardware.graphics.enable = true;
