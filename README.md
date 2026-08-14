@@ -340,3 +340,22 @@ curl -sSL https://raw.githubusercontent.com/jackockzuo/home-manager-ran/main/set
 | `grub-archiso.sh` | 配置本地 archiso GRUB 引导 |
 | `snapper-fix.sh` | 修复/重建 snapper 防护 |
 | `snap-pac.sh` | 安装升级前自动快照 |
+
+---
+
+## 十、NixOS 迁移（可选）
+
+本仓库同时支持迁移到 NixOS（`.#laptop` 配置已构建验证）：
+
+| 文档/脚本 | 用途 |
+|---|---|
+| `setup/nixos-install.md` | ★ 实机安装指南（分区→flake 安装→联网验证） |
+| `setup/backup.sh` | 迁移前备份关键数据（文档/图片/浏览器配置） |
+
+```bash
+# 迁移前备份
+sudo bash setup/backup.sh
+
+# 实机安装（详见 nixos-install.md）
+nixos-install --flake .#laptop
+```
