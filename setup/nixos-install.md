@@ -140,4 +140,12 @@ pkill -f chrome; google-chrome-stable &
 | 浏览器打不开 | firefox/chromium 已内置，检查网络 |
 | Chrome 模糊玻璃/不显示 | NVIDIA + Vulkan 兼容问题，装完执行下方 Chrome flags 配置 |
 
+### 迁移后需调整的 Arch 特有引用（NixOS 差异）
 
+home-manager 配置中 3 处 Arch 特有项在 NixOS 上的表现：
+
+| 配置 | Arch 行为 | NixOS 行为 | 处理 |
+|---|---|---|---|
+| `modules/desktop/fcitx5.nix` Exec=/usr/bin/fcitx5 | 屏蔽 XDG autostart 防重复 | NixOS 由系统模块管 fcitx5，此屏蔽无副作用 | 无需处理 |
+| `modules/desktop/filemanager.nix` Thunar 图片转换用 /usr/bin/notify-send | 正常 | NixOS 无 /usr/bin，动作报错 | 迁移后改路径或忽略（非致命） |
+| `modules/tools/shell.nix` clean-system 函数（pacman） | 清理 Arch 系统 | NixOS 无 pacman，调用报错 | 迁移后从配置移除该函数 |
