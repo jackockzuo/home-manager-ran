@@ -8,9 +8,9 @@
 ## 1. 制作 NixOS 安装 U 盘
 
 ```bash
-# 下载 NixOS ISO（国内镜像）
+# 下载 NixOS ISO（官方渠道自动重定向到最新 25.05；国内网络慢可加代理）
 curl -L -o ~/Downloads/nixos.iso \
-  https://mirrors.tuna.tsinghua.edu.cn/nixos-images/nixos-25.05/nixos-gnome-25.05.xxxx-x86_64-linux.iso
+  https://channels.nixos.org/nixos-25.05/latest-nixos-gnome-x86_64-linux.iso
 # 写入 U 盘（确认 /dev/sdX 是 U 盘！）
 sudo dd if=~/Downloads/nixos.iso of=/dev/sdX bs=4M status=progress conv=fsync
 ```
