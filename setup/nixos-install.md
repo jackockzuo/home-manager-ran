@@ -70,13 +70,17 @@ nixos-generate-config --root /mnt
 # 拉取 dotfiles（GitHub public）
 git clone https://github.com/jackockzuo/home-manager-ran.git /mnt/dotfiles
 
-# 用生成的硬件 UUID 替换占位符
-# 编辑 /mnt/dotfiles/nixos/hardware-laptop.nix：
-#   REPLACE_WITH_ROOT_UUID  → /mnt/etc/nixos/hardware-configuration.nix 中的根 UUID
-#   REPLACE_WITH_HOME_UUID  → home 子卷 UUID
-#   REPLACE_WITH_EFI_UUID   → EFI UUID
-# 或直接用 nixos-generate-config 生成的配置（推荐）：
-cp /mnt/etc/nixos/hardware-configuration.nix /mnt/dotfiles/nixos/
+# 用生成的硬件 UUID 替换占位符（手动替换，勿复制整个 hardware-configuration.nix，
+# 否则与 hardware-laptop.nix 的 fileSystems 重复定义会报错）
+# 1) 查看真实 UUID：
+grep -E 'by-uuid|by-label' /mnt/etc/nixos/hardware-configuration.nix
+# 2) 编辑 /mnt/dotfiles/nixos/hardware-laptop.nix 替换 3 个占位符：
+#    REPLACE_WITH_ROOT_UUID → 根 btrfs 分区 UUID
+#    REPLACE_WITH_HOME_UUID → 同分区（home 是子卷，用同一 UUID）
+#    REPLACE_WITH_EFI_UUID  → EFI 分区 UUID
+sed -i 's/REPLACE_WITH_ROOT_UUID/<根UUID>/' /mnt/dotfiles/nixos/hardware-laptop.nix
+sed -i 's/REPLACE_WITH_HOME_UUID/<根UUID>/' /mnt/dotfiles/nixos/hardware-laptop.nix
+sed -i 's/REPLACE_WITH_EFI_UUID/<EFI-UUID>/' /mnt/dotfiles/nixos/hardware-laptop.nix
 ```
 
 ## 5. 安装
