@@ -1,7 +1,8 @@
 # ============================================================
 # core.nix —— 基础层（NixOS 下由 ~/nixos-config 系统层配合）
-# 职责：用户身份、Wayland 环境变量、nix 客户端配置
-# 不包含：桌面组件、开发工具（分别由 desktop/ tools/ 提供）
+# 职责：用户身份、nix 客户端配置
+# 不包含：环境变量（→ env.nix）、桌面组件（→ desktop/）、
+#         开发工具（→ tools/）、网络（→ network/）
 #
 # NixOS 集成说明（见 nixos-config/flake.nix）：
 # - useGlobalPkgs = true：二进制由系统层管理，HM 只管配置文件
@@ -21,23 +22,6 @@
   home.stateVersion = "24.05";
 
   programs.home-manager.enable = true;
-
-  # ---------- 全局 Wayland 环境变量 ----------
-  home.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    ELECTRON_OZONE_PLATFORM_HINT = "wayland";
-    QT_QPA_PLATFORM = "wayland";
-    XDG_CURRENT_DESKTOP = "Niri";
-
-    # --- 修复 Fcitx5 Wayland 卡顿与光标跟随 ---
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-    XMODIFIERS = "@im=fcitx";
-    SDL_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "ibus"; # fcitx5 提供 ibus 兼容，GLFW 应用走 ibus 通道
-    # 不依赖
-    PASSWORD_STORE = "gnome-listsecret";
-  };
 
   # ---------- nix 客户端配置（写入 ~/.config/nix/nix.conf）----------
   nix = {

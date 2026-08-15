@@ -14,7 +14,7 @@
   };
 
   # ---- 2. fontconfig 字体渲染 ----
-  # 效果：全局抗锯齿 + hintslight 微调 + 中文回退（Noto Sans CJK SC）+ monospace 优先 JetBrains Mono
+  # 效果：全局抗锯齿 + hintslight 微调 + 中文回退（Noto Sans CJK SC）+ 字体统一优先 Maple Mono NF CN
   xdg.configFile."fontconfig/fonts.conf" = {
     source = ../../source/beautify/fontconfig/fonts.conf;
     force = true; # 覆盖原作者旧配置

@@ -5,7 +5,7 @@ initial-tool = "brush"
 zoom-factor=1.1
 actions-on-right-click = ["save-to-clipboard"]
 [font]
-family = "Noto Sans"
+family = "Maple Mono NF CN"
 style = "Regular"
 fallback = [
     "Noto Sans CJK SC",

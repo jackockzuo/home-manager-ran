@@ -3,6 +3,7 @@
 # 原则：二进制（niri/kitty/fcitx5 等）由 NixOS 系统层安装，
 #       HM 只管理配置文件
 # 每个子模块独立关注点，可按需增删
+# 新增 → 新建 <关注点>.nix 并在此加一行；预留 → 取消注释
 # ============================================================
 { pkgs, ... }:
 
@@ -18,6 +19,11 @@
     ./mpv.nix # 视频播放
     ./filemanager.nix # Thunar 右键动作 + 默认应用
     ./portal.nix # xdg-desktop-portal
+
+    # ---- 🔮 预留模块（需要时取消注释）----
+    # ./media.nix # 音乐/流媒体（Spotify/ncmpcpp）
+    # ./design.nix # 设计创作（GIMP/Krita/Blender）
+    # ./games.nix # 游戏（Steam/Lutris/Heroic）
   ];
 
   # 桌面环境必需的 CLI 工具（nix 管理；截图/剪贴板/U盘挂载）
