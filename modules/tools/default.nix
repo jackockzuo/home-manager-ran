@@ -11,6 +11,7 @@
     ./shell.nix # fish + starship + zoxide/fzf/bat
     ./neovim.nix # 编辑器（含 fcitx5 状态联动）
     ./social.nix # 社交（QQ 原生 Wayland 等）
+    ./opencode.nix # AI 编码助手（opencode CLI）
     # ./wine.nix     # Wine 程序管理（需要时取消注释）
 
     # ---- 🔮 预留模块（需要时取消注释）----
