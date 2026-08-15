@@ -174,9 +174,10 @@ overview {
 // See the binds section below for more ipawn examples.
 
 // 询问管理员权限功能（身份验证）
-spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-// 屏幕分享、录屏相关的环境设置,如果屏幕分享出异常的话可以开启
- spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
+// NixOS: polkit_gnome 二进制在系统 PATH 中，用名字解析而非 /usr/lib 硬编码
+spawn-at-startup "polkit-gnome-authentication-agent-1"
+// 屏幕分享、录屏相关的环境设置（portal 服务由 xdg-desktop-portal 经 dbus 自动拉起）
+spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri"
 // GNOME tracker修复
 spawn-sh-at-startup "systemctl --user set-environment XDG_SESSION_CLASS=user"
 // 通知程序（SwayNC 毛玻璃通知接管）

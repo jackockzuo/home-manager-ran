@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   # ---- 6. mpv ----
@@ -6,11 +6,11 @@
   xdg.configFile."mpv/config" = {
     force = true; # 覆盖原作者旧配置
     text = ''
-    #使用vulkan后端
-    gpu-api=vulkan
-    #通用自动模式硬解
-    hwdec=auto-safe
-  '';
+      #使用vulkan后端
+      gpu-api=vulkan
+      #通用自动模式硬解
+      hwdec=auto-safe
+    '';
   };
 
 }

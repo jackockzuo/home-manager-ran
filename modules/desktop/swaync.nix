@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   # ---- 4. SwayNC 通知（真毛玻璃，ext-background-effect-v1，niri 26.04 原生支持）----
   # 效果：圆角 + 合成器级毛玻璃 + mauve 光晕边框 + 阴影
-  # 需 AUR 包 swaync-git（含 background-blur 支持，pacman 版 0.12.6 无）
+  # 二进制 swaynotificationcenter 由系统层安装（NixOS 版含 background-blur 支持）
   xdg.configFile."swaync/config.json".text = ''
     {
       "$schema": "/etc/xdg/swaync/configSchema.json",
@@ -71,6 +71,5 @@
     .control-center .notification { margin-bottom: 10px; }
     .control-center .notification-group-header { margin: 4px 0 8px; }
   '';
-
 
 }

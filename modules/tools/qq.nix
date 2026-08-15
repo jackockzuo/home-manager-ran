@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   # ---- 11. QQ 原生 Wayland ----
@@ -6,8 +6,8 @@
   xdg.configFile."qq-flags.conf" = {
     force = true; # 覆盖原作者旧配置
     text = ''
-    --ozone-platform=wayland
-  '';
+      --ozone-platform=wayland
+    '';
   };
 
 }

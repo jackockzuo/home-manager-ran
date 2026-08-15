@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   # ============================================================
@@ -21,12 +21,17 @@
   };
 
   # ---- 3. GTK 全局统一主题 (Catppuccin Mocha) ----
+  # gtk4.theme = null：显式采用 HM 26.05+ 新默认（gtk4 不再跟随 gtk3 主题），
+  # 消除 stateVersion < 26.05 时的弃用警告
   gtk = {
-    gtk4.theme = null;
     enable = true;
+    gtk4.theme = null;
     theme = {
       name = "Catppuccin-Mocha-Standard-Mauve-Dark";
-      package = pkgs.catppuccin-gtk.override { accents = [ "mauve" ]; variant = "mocha"; };
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "mauve" ];
+        variant = "mocha";
+      };
     };
     iconTheme = {
       name = "Papirus-Dark";

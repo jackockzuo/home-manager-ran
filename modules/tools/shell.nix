@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   # 1. Fish Shell 基础配置
@@ -13,19 +13,16 @@
       cat = "bat";
       lg = "lazygit";
       v = "nvim";
-      };
+    };
   };
   # 🔴 100% 兼容的方式：直接生成 Fish 自动加载函数文件 ~/.config/fish/functions/clean-system.fish
   xdg.configFile."fish/functions/clean-system.fish".text = ''
     function clean-system
         echo "🧹 正在清理 Nix 废弃历史版本..."
-        nix-collect-garbage -d
+        sudo nix-collect-garbage -d
 
-        echo "🧹 正在清理 Pacman 软件包缓存..."
-        sudo pacman -Sc --noconfirm
-
-        echo "🧹 正在清理系统孤立无用包..."
-        sudo pacman -Qtdq | sudo pacman -Rns
+        echo "🧹 正在清理 NixOS 旧系统代（保留最近 5 代）..."
+        sudo nix-env --delete-generations +5 --profile /nix/var/nix/profiles/system
 
         echo "✨ 系统保洁完成，恢复极致清爽！"
     end
@@ -69,11 +66,26 @@
         disabled = false;
         style = "bg:red fg:crust";
         symbols = {
-          Windows = ""; Ubuntu = "󰕈"; SUSE = ""; Raspbian = "󰐿";
-          Mint = "󰣭"; Macos = "󰀵"; Manjaro = ""; Linux = "󰌽";
-          Gentoo = "󰣨"; Fedora = "󰣛"; Alpine = ""; Amazon = "";
-          Android = ""; AOSC = ""; Arch = "󰣇"; Artix = "󰣇";
-          CentOS = ""; Debian = "󰣚"; Redhat = "󱄛"; RedHatEnterprise = "󱄛";
+          Windows = "";
+          Ubuntu = "󰕈";
+          SUSE = "";
+          Raspbian = "󰐿";
+          Mint = "󰣭";
+          Macos = "󰀵";
+          Manjaro = "";
+          Linux = "󰌽";
+          Gentoo = "󰣨";
+          Fedora = "󰣛";
+          Alpine = "";
+          Amazon = "";
+          Android = "";
+          AOSC = "";
+          Arch = "󰣇";
+          Artix = "󰣇";
+          CentOS = "";
+          Debian = "󰣚";
+          Redhat = "󱄛";
+          RedHatEnterprise = "󱄛";
         };
       };
 
@@ -90,40 +102,131 @@
         truncation_length = 3;
         truncation_symbol = "…/";
         substitutions = {
-          "Documents" = "󰈙 "; "Downloads" = " "; "Music" = "󰝚 ";
-          "Pictures" = " "; "Developer" = "󰲋 ";
+          "Documents" = "󰈙 ";
+          "Downloads" = " ";
+          "Music" = "󰝚 ";
+          "Pictures" = " ";
+          "Developer" = "󰲋 ";
         };
       };
 
-      git_branch = { symbol = ""; style = "bg:yellow"; format = "[[ $symbol $branch ](fg:crust bg:yellow)]($style)"; };
-      git_status = { style = "bg:yellow"; format = "[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)"; };
-      cmake = { symbol = " "; style = "bg:blue"; format = "[[ $symbol$version ](fg:crust bg:sapphire)]($style)"; };
-      c = { symbol = " "; style = "bg:green"; format = "[[ $symbol $name $version ](fg:crust bg:green)]($style)"; };
-      cpp = { symbol = " "; style = "bg:green fg:crust"; format = "[ $symbol($name $version) ]($style)"; disabled = false; };
-      fortran = { symbol = "󱈚 "; style = "bg:green"; format = "[[ $symbol $name $version ](fg:crust bg:green)]($style)"; };
-      rust = { symbol = ""; style = "bg:green"; format = "[[ $symbol$version ](fg:crust bg:green)]($style)"; };
-      pixi = { symbol = "󱄵 "; style = "bg:blue"; format = "[[ $symbol $environment ](fg:crust bg:sapphire)]($style)"; };
-      java = { symbol = " "; style = "bg:green"; format = "[[ $symbol $version ](fg:crust bg:green)]($style)"; };
-      haskell = { symbol = ""; style = "bg:green"; format = "[[ $symbol$version ](fg:crust bg:green)]($style)"; };
-      python = { symbol = ""; style = "bg:green"; format = "[[ $symbol $version ](fg:crust bg:green)]($style)"; };
-      time = { disabled = false; time_format = "%R"; style = "bg:lavender"; format = "[[  $time ](fg:crust bg:lavender)]($style)"; };
-      cmd_duration = { show_milliseconds = true; format = " in $duration "; style = "fg:text"; disabled = false; };
-      line_break = { disabled = false; };
-      character = { disabled = false; success_symbol = "[❯](bold fg:green)"; error_symbol = "[❯](bold fg:red)"; vimcmd_symbol = "[❮](bold fg:green)"; };
+      git_branch = {
+        symbol = "";
+        style = "bg:yellow";
+        format = "[[ $symbol $branch ](fg:crust bg:yellow)]($style)";
+      };
+      git_status = {
+        style = "bg:yellow";
+        format = "[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)";
+      };
+      cmake = {
+        symbol = " ";
+        style = "bg:blue";
+        format = "[[ $symbol$version ](fg:crust bg:sapphire)]($style)";
+      };
+      c = {
+        symbol = " ";
+        style = "bg:green";
+        format = "[[ $symbol $name $version ](fg:crust bg:green)]($style)";
+      };
+      cpp = {
+        symbol = " ";
+        style = "bg:green fg:crust";
+        format = "[ $symbol($name $version) ]($style)";
+        disabled = false;
+      };
+      fortran = {
+        symbol = "󱈚 ";
+        style = "bg:green";
+        format = "[[ $symbol $name $version ](fg:crust bg:green)]($style)";
+      };
+      rust = {
+        symbol = "";
+        style = "bg:green";
+        format = "[[ $symbol$version ](fg:crust bg:green)]($style)";
+      };
+      pixi = {
+        symbol = "󱄵 ";
+        style = "bg:blue";
+        format = "[[ $symbol $environment ](fg:crust bg:sapphire)]($style)";
+      };
+      java = {
+        symbol = " ";
+        style = "bg:green";
+        format = "[[ $symbol $version ](fg:crust bg:green)]($style)";
+      };
+      haskell = {
+        symbol = "";
+        style = "bg:green";
+        format = "[[ $symbol$version ](fg:crust bg:green)]($style)";
+      };
+      python = {
+        symbol = "";
+        style = "bg:green";
+        format = "[[ $symbol $version ](fg:crust bg:green)]($style)";
+      };
+      time = {
+        disabled = false;
+        time_format = "%R";
+        style = "bg:lavender";
+        format = "[[  $time ](fg:crust bg:lavender)]($style)";
+      };
+      cmd_duration = {
+        show_milliseconds = true;
+        format = " in $duration ";
+        style = "fg:text";
+        disabled = false;
+      };
+      line_break = {
+        disabled = false;
+      };
+      character = {
+        disabled = false;
+        success_symbol = "[❯](bold fg:green)";
+        error_symbol = "[❯](bold fg:red)";
+        vimcmd_symbol = "[❮](bold fg:green)";
+      };
 
       palettes.catppuccin_mocha = {
-        rosewater = "#f5e0dc"; flamingo = "#f2cdcd"; pink = "#f5c2e7"; mauve = "#cba6f7";
-        red = "#f38ba8"; maroon = "#eba0ac"; peach = "#fab387"; yellow = "#f9e2af";
-        green = "#a6e3a1"; teal = "#94e2d5"; sky = "#89dceb"; sapphire = "#74c7ec";
-        blue = "#89b4fa"; lavender = "#b4befe"; text = "#cdd6f4"; subtext1 = "#bac2de";
-        subtext0 = "#a6adc8"; overlay2 = "#9399b2"; overlay1 = "#7f849c"; overlay0 = "#6c7086";
-        surface2 = "#585b70"; surface1 = "#45475a"; surface0 = "#313244"; base = "#1e1e2e";
-        mantle = "#181825"; crust = "#11111b";
+        rosewater = "#f5e0dc";
+        flamingo = "#f2cdcd";
+        pink = "#f5c2e7";
+        mauve = "#cba6f7";
+        red = "#f38ba8";
+        maroon = "#eba0ac";
+        peach = "#fab387";
+        yellow = "#f9e2af";
+        green = "#a6e3a1";
+        teal = "#94e2d5";
+        sky = "#89dceb";
+        sapphire = "#74c7ec";
+        blue = "#89b4fa";
+        lavender = "#b4befe";
+        text = "#cdd6f4";
+        subtext1 = "#bac2de";
+        subtext0 = "#a6adc8";
+        overlay2 = "#9399b2";
+        overlay1 = "#7f849c";
+        overlay0 = "#6c7086";
+        surface2 = "#585b70";
+        surface1 = "#45475a";
+        surface0 = "#313244";
+        base = "#1e1e2e";
+        mantle = "#181825";
+        crust = "#11111b";
       };
     };
   };
 
-  programs.zoxide = { enable = true; enableFishIntegration = true; };
-  programs.fzf = { enable = true; enableFishIntegration = true; };
-  programs.bat = { enable = true; };
+  programs.zoxide = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+  programs.fzf = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+  programs.bat = {
+    enable = true;
+  };
 }

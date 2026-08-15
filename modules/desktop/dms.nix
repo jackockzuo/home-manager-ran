@@ -1,4 +1,7 @@
-{ config, pkgs, lib, ... }:
+{
+  lib,
+  ...
+}:
 
 {
   # ============================================================
@@ -21,11 +24,13 @@
   };
 
   # 动态配置：仅在配置缺失时部署（重装恢复），不干扰运行中的 DMS
+  # 注意：themes 已被上方 xdg.configFile 以 symlink 管理（与 source 是同一 store 文件），
+  # 普通 cp -r 会报 "are the same file" 导致激活失败；用 cp -rn 跳过已存在项 + || true 兜底。
   home.activation.restoreDmsConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p "$HOME/.config/DankMaterialShell"
     if [ ! -e "$HOME/.config/DankMaterialShell/settings.json" ]; then
-      $DRY_RUN_CMD cp -r "${../../source/dms}/." "$HOME/.config/DankMaterialShell/"
-      $DRY_RUN_CMD chmod -R u+w "$HOME/.config/DankMaterialShell"
+      $DRY_RUN_CMD cp -rn "${../../source/dms}/." "$HOME/.config/DankMaterialShell/" || true
     fi
+    $DRY_RUN_CMD chmod -R u+w "$HOME/.config/DankMaterialShell"
   '';
 }
